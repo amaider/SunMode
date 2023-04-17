@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "sunkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Sunlitt/SunKit.git",
+      "state" : {
+        "revision" : "f397e78b354b2af503c1ad4a5c2b3392e041e844",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}

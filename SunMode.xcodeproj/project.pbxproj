@@ -1,0 +1,404 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F966426129EC71470022FDC3 /* SunModeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426029EC71470022FDC3 /* SunModeApp.swift */; };
+		F966426329EC71470022FDC3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426229EC71470022FDC3 /* ContentView.swift */; };
+		F966426529EC714B0022FDC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F966426429EC714B0022FDC3 /* Assets.xcassets */; };
+		F966426829EC714B0022FDC3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F966426729EC714B0022FDC3 /* Preview Assets.xcassets */; };
+		F966427029EC71E90022FDC3 /* MenuBarIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426F29EC71E90022FDC3 /* MenuBarIcon.swift */; };
+		F966427229EC722C0022FDC3 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966427129EC722C0022FDC3 /* Model.swift */; };
+		F966427729EC72A20022FDC3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966427629EC72A20022FDC3 /* Extensions.swift */; };
+		F966427B29EC73760022FDC3 /* HueV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966427A29EC73760022FDC3 /* HueV1.swift */; };
+		F966427D29EC737F0022FDC3 /* StaticTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966427C29EC737F0022FDC3 /* StaticTime.swift */; };
+		F966428029EC74B40022FDC3 /* SunKit in Frameworks */ = {isa = PBXBuildFile; productRef = F966427F29EC74B40022FDC3 /* SunKit */; };
+		F966428229EC779D0022FDC3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966428129EC779D0022FDC3 /* LocationManager.swift */; };
+		F966428429EC7A580022FDC3 /* Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966428329EC7A580022FDC3 /* Coordinates.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F966425D29EC71470022FDC3 /* SunMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SunMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F966426029EC71470022FDC3 /* SunModeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunModeApp.swift; sourceTree = "<group>"; };
+		F966426229EC71470022FDC3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F966426429EC714B0022FDC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F966426729EC714B0022FDC3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F966426929EC714B0022FDC3 /* SunMode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SunMode.entitlements; sourceTree = "<group>"; };
+		F966426F29EC71E90022FDC3 /* MenuBarIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIcon.swift; sourceTree = "<group>"; };
+		F966427129EC722C0022FDC3 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		F966427629EC72A20022FDC3 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		F966427A29EC73760022FDC3 /* HueV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueV1.swift; sourceTree = "<group>"; };
+		F966427C29EC737F0022FDC3 /* StaticTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticTime.swift; sourceTree = "<group>"; };
+		F966428129EC779D0022FDC3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		F966428329EC7A580022FDC3 /* Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinates.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F966425A29EC71470022FDC3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F966428029EC74B40022FDC3 /* SunKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F966425429EC71470022FDC3 = {
+			isa = PBXGroup;
+			children = (
+				F966425F29EC71470022FDC3 /* SunMode */,
+				F966425E29EC71470022FDC3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F966425E29EC71470022FDC3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F966425D29EC71470022FDC3 /* SunMode.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F966425F29EC71470022FDC3 /* SunMode */ = {
+			isa = PBXGroup;
+			children = (
+				F966426029EC71470022FDC3 /* SunModeApp.swift */,
+				F966426229EC71470022FDC3 /* ContentView.swift */,
+				F966426F29EC71E90022FDC3 /* MenuBarIcon.swift */,
+				F966427329EC72680022FDC3 /* Modes */,
+				F966427129EC722C0022FDC3 /* Model.swift */,
+				F966427629EC72A20022FDC3 /* Extensions.swift */,
+				F966426429EC714B0022FDC3 /* Assets.xcassets */,
+				F966426929EC714B0022FDC3 /* SunMode.entitlements */,
+				F966426629EC714B0022FDC3 /* Preview Content */,
+			);
+			path = SunMode;
+			sourceTree = "<group>";
+		};
+		F966426629EC714B0022FDC3 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F966426729EC714B0022FDC3 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F966427329EC72680022FDC3 /* Modes */ = {
+			isa = PBXGroup;
+			children = (
+				F966428129EC779D0022FDC3 /* LocationManager.swift */,
+				F966428329EC7A580022FDC3 /* Coordinates.swift */,
+				F966427A29EC73760022FDC3 /* HueV1.swift */,
+				F966427C29EC737F0022FDC3 /* StaticTime.swift */,
+			);
+			path = Modes;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F966425C29EC71470022FDC3 /* SunMode */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F966426C29EC714B0022FDC3 /* Build configuration list for PBXNativeTarget "SunMode" */;
+			buildPhases = (
+				F966425929EC71470022FDC3 /* Sources */,
+				F966425A29EC71470022FDC3 /* Frameworks */,
+				F966425B29EC71470022FDC3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SunMode;
+			packageProductDependencies = (
+				F966427F29EC74B40022FDC3 /* SunKit */,
+			);
+			productName = SunMode;
+			productReference = F966425D29EC71470022FDC3 /* SunMode.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F966425529EC71470022FDC3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					F966425C29EC71470022FDC3 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = F966425829EC71470022FDC3 /* Build configuration list for PBXProject "SunMode" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F966425429EC71470022FDC3;
+			packageReferences = (
+				F966427E29EC74B40022FDC3 /* XCRemoteSwiftPackageReference "SunKit" */,
+			);
+			productRefGroup = F966425E29EC71470022FDC3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F966425C29EC71470022FDC3 /* SunMode */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F966425B29EC71470022FDC3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F966426829EC714B0022FDC3 /* Preview Assets.xcassets in Resources */,
+				F966426529EC714B0022FDC3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F966425929EC71470022FDC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F966426329EC71470022FDC3 /* ContentView.swift in Sources */,
+				F966427029EC71E90022FDC3 /* MenuBarIcon.swift in Sources */,
+				F966428429EC7A580022FDC3 /* Coordinates.swift in Sources */,
+				F966427729EC72A20022FDC3 /* Extensions.swift in Sources */,
+				F966426129EC71470022FDC3 /* SunModeApp.swift in Sources */,
+				F966427229EC722C0022FDC3 /* Model.swift in Sources */,
+				F966428229EC779D0022FDC3 /* LocationManager.swift in Sources */,
+				F966427B29EC73760022FDC3 /* HueV1.swift in Sources */,
+				F966427D29EC737F0022FDC3 /* StaticTime.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F966426A29EC714B0022FDC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F966426B29EC714B0022FDC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		F966426D29EC714B0022FDC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SunMode/SunMode.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SunMode/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.amaider.SunMode;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F966426E29EC714B0022FDC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SunMode/SunMode.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SunMode/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.amaider.SunMode;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F966425829EC71470022FDC3 /* Build configuration list for PBXProject "SunMode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F966426A29EC714B0022FDC3 /* Debug */,
+				F966426B29EC714B0022FDC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F966426C29EC714B0022FDC3 /* Build configuration list for PBXNativeTarget "SunMode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F966426D29EC714B0022FDC3 /* Debug */,
+				F966426E29EC714B0022FDC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F966427E29EC74B40022FDC3 /* XCRemoteSwiftPackageReference "SunKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Sunlitt/SunKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F966427F29EC74B40022FDC3 /* SunKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F966427E29EC74B40022FDC3 /* XCRemoteSwiftPackageReference "SunKit" */;
+			productName = SunKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F966425529EC71470022FDC3 /* Project object */;
+}
