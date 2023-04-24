@@ -10,16 +10,19 @@ struct SunModeApp: App {
     @StateObject var model: Model = Model()
     
     var body: some Scene {
-        // MARK: Menu Bar
         MenuBarExtra(content: {
             ContentView(model: model)
                 .background(Blur())
         }, label: {
             MenuBarIcon(model: model)
-                .onChange(of: model.systemAppearance, perform: { updateSystemMode(to: $0) }) /// dont use startMode, so manual appearance doesnt get instantly overwritten
-                
-                .onAppear(perform: model.startMode)
-                .onReceive(wakeUpPub, perform: { _ in model.startMode() })
+                .onAppear(perform: {
+                    model.systemAppearance = getSystemAppearance()
+                    model.startMode()
+                })
+                .onReceive(wakeUpPub, perform: { _ in
+                    model.systemAppearance = getSystemAppearance()
+                    model.startMode()
+                })
             
                 .onChange(of: model.mode, perform: { _ in model.startMode() })
                 .onChange(of: model.coord.restartMode, perform: { _ in model.startMode() })
