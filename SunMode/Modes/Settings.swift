@@ -1,11 +1,11 @@
 // 20.04.23, Swift 5.0, macOS 13.1, Xcode 12.4
-// Copyright © __YEAR__ amaider. All rights reserved.
+// Copyright © 2023 amaider. All rights reserved.
 
 import SwiftUI
+import ServiceManagement
 
 struct Settings: Codable {
     var menuBarIconAdvanced: Bool = true
-    var hasLauncDeamon: Bool = false
     
     // var restartMode: Bool = false    /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
 }
@@ -20,33 +20,45 @@ struct SettingsInputs: View {
             .scaleEffect(0.75)
             .padding(.trailing, -10)
             .help("MenuBarIcon: show next Sunset/Sunrise or current lightlevel")
+            .onChange(of: settings.menuBarIconAdvanced, perform: saveChange)
         
-        Toggle("Lauch on Start Up", isOn: $settings.hasLauncDeamon)
+        
+        let launchItemBinding: Binding<Bool> = Binding(
+            get: { SMAppService.mainApp.status == .enabled },
+            set: {
+                /// add or remove LoginItem
+                if $0 {
+                    do {
+                        try SMAppService.mainApp.register()
+                    } catch {
+                        NSLog("add LoginItem Error: \(error)")
+                    }
+                } else {
+                    do {
+                        try SMAppService.mainApp.unregister()
+                    } catch {
+                        NSLog("remove LoginItem Error: \(error)")
+                    }
+                }
+            }
+        )
+        Toggle("Lauch on Start Up", isOn: launchItemBinding)
             .toggleStyle(.switch)
             .scaleEffect(0.75)
             .padding(.trailing, -10)
-            .onChange(of: settings.hasLauncDeamon, perform: {
-                saveChange($0)
-                
-                if $0 {
-                    print("todo: enable launch Deamon")
-                } else {
-                    print("todo: disable launch Deamon")
-                }
-            })
         
         Button("Quit SunMode", action: quitAction)
+        
+        Text("SunMode v1.0")
+            .foregroundColor(.gray)
     }
     
     // MARK: Functions
-    private func launchDeamonAction() {
-        print("todo: add to lauch deamons")
-    }
     private func quitAction() {
         NSApplication.shared.terminate(nil)
     }
     private func saveChange(_ any: any Equatable) {
-        settings.restartMode.toggle()
+        // settings.restartMode.toggle()
         UserDefaults.standard.set(try? PropertyListEncoder().encode(settings), forKey: "settings")
     }
 }
