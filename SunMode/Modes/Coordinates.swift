@@ -16,7 +16,6 @@ struct Coordinates: Codable {
     
     var locationName: String = ""
     var restartMode: Bool = false   /// single variable for onChange to subscribe to instead of each single variable seperately
-    var locationPermission: Bool = false
     
     /// Helpers
     private var _sun: Sun {
@@ -128,8 +127,8 @@ struct CoordinatesInputs: View {
                 coord.latitude = location.coordinate.latitude
                 coord.longitude = location.coordinate.longitude
             }, geoCompletionHandler: { placemark in
-                coord.locationName = placemark.locality ?? "-"
-                coord.timeZone = Double((placemark.timeZone?.secondsFromGMT() ?? 0) / 3600)
+                coord.locationName = placemark?.locality ?? "-"
+                coord.timeZone = Double((placemark?.timeZone?.secondsFromGMT() ?? 0) / 3600)
             })
         })
     }
@@ -139,27 +138,24 @@ struct CoordinatesInputs: View {
         locationManager?.manager.requestLocation()
     }
     
-    private func geoLocateAction() {
+    private func saveChange(_ any: any Equatable) {
+        coord.locationName = "..."
+        coord.restartMode.toggle()
+        
+        UserDefaults.standard.set(try? PropertyListEncoder().encode(coord), forKey: "coord")
+        
         let location: CLLocation = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
         locationManager?.geoLocation(for: location)
-    }
-    
-    private func saveChange(_ any: any Equatable) {
-        coord.restartMode.toggle()
-        UserDefaults.standard.set(try? PropertyListEncoder().encode(coord), forKey: "coord")
-        geoLocateAction()
+        // parseLocation(for: location)
     }
     
     /// set Location Name and TimeZone
     private func parseLocation(for location: CLLocation) {
         CLGeocoder().reverseGeocodeLocation(location, completionHandler: { (placemarks: [CLPlacemark]?, error: Error?) in
-            if (error != nil) {
-                NSLog("CLGeocoder() error: \(String(describing: error))")
-            }
+            if (error != nil) { NSLog("CLGeocoder() error: \(String(describing: error))") }
             
-            guard let placemark: CLPlacemark = placemarks?.first else { return }
-            coord.locationName = placemark.locality ?? "-"
-            coord.timeZone = Double((placemark.timeZone?.secondsFromGMT() ?? 0) / 3600)
+            coord.locationName = placemarks?.first?.locality ?? "-"
+            coord.timeZone = Double((placemarks?.first?.timeZone?.secondsFromGMT() ?? 0) / 3600)
             
             if !CLGeocoder().isGeocoding {
                 CLGeocoder().cancelGeocode()

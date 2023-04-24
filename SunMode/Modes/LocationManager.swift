@@ -7,9 +7,9 @@ import CoreLocation
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     let manager = CLLocationManager()
     var locationCompletionHandler: (CLLocation) -> Void
-    var geoCompletionHandler: (CLPlacemark) -> Void
+    var geoCompletionHandler: (CLPlacemark?) -> Void
     
-    init(locationCompletionHandler: @escaping (CLLocation) -> Void, geoCompletionHandler: @escaping (CLPlacemark) -> Void) {
+    init(locationCompletionHandler: @escaping (CLLocation) -> Void, geoCompletionHandler: @escaping (CLPlacemark?) -> Void) {
         self.locationCompletionHandler = locationCompletionHandler
         self.geoCompletionHandler = geoCompletionHandler
         
@@ -33,12 +33,9 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     func geoLocation(for _location: CLLocation) {
         CLGeocoder().reverseGeocodeLocation(_location, completionHandler: { (placemarks: [CLPlacemark]?, error: Error?) in
-            if error != nil {
-                NSLog("CLGeocoder() error: \(String(describing: error?.localizedDescription)))")
-            }
+            if error != nil { NSLog("CLGeocoder() error: \(String(describing: error?.localizedDescription)))") }
             
-            guard let placemark: CLPlacemark = placemarks?.first else { return }
-            self.geoCompletionHandler(placemark)
+            self.geoCompletionHandler(placemarks?.first)
             
             if(!CLGeocoder().isGeocoding){
                 CLGeocoder().cancelGeocode()
