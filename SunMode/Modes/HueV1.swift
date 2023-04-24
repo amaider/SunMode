@@ -47,7 +47,7 @@ struct HueV1: Codable {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data)  as? [String: Any]
                     // NSLog("-------- json: --------")
-                    // NSLog(json)
+                    // NSLog(String(describing: json))
                     
                     /// parse values
                     if let state = json?["state"] as? [String: Any],
@@ -59,6 +59,7 @@ struct HueV1: Codable {
                        let tholddark: Int = config["tholddark"] as? Int {
                         /// all values were found
                         result = Sensor(lightlevel: lightlevel, dark: dark, daylight: daylight, lastupdated: lastupdated, tholddark: tholddark)
+                        print(result)
                     }
                 } catch {
                     NSLog("-------- json error: --------")
@@ -76,6 +77,67 @@ struct HueV1: Codable {
         }).resume()
 
         return result
+    }
+    
+    var currAppearanceForCompletion: SystemAppearances? {
+        guard let currSensor = self.sensorData else { return nil }
+        
+        if useBridgeThreshold {
+            return currSensor.dark ? .dark : .light
+        } else {
+            return currSensor.lightlevel < customThreshold ? .dark : .light
+        }
+    }
+    func getCurrAppearanceForCompletion(sensor: Sensor) -> SystemAppearances? {
+        if useBridgeThreshold {
+            return sensor.dark ? .dark : .light
+        } else {
+            return sensor.lightlevel < customThreshold ? .dark : .light
+        }
+    }
+    func getSensorStatusCompletion(completion: @escaping (Sensor) -> Void) {
+        let url = URL(string: "http://\(ipAddress)/api/\(apiKey)/sensors/\(sensorNumber)")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+            if let data = data, error == nil {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data)  as? [String: Any]
+                    // NSLog("-------- json: --------")
+                    // NSLog(String(describing: json))
+                    
+                    /// parse values
+                    if let state = json?["state"] as? [String: Any],
+                       let lightlevel: Int = state["lightlevel"] as? Int,
+                       let dark: Bool = state["dark"] as? Bool,
+                       let daylight: Bool = state["daylight"] as? Bool,
+                       let lastupdated: String = state["lastupdated"] as? String,
+                       let config = json?["config"] as? [String: Any],
+                       let tholddark: Int = config["tholddark"] as? Int {
+                        
+                        /// all values were found
+                        let result: Sensor = Sensor(lightlevel: lightlevel, dark: dark, daylight: daylight, lastupdated: lastupdated, tholddark: tholddark)
+                        completion(result)
+                    }
+                } catch {
+                    NSLog("-------- json error: --------")
+                    NSLog(String(describing: error))
+                }
+            } else {
+                /// urlsession error
+                NSLog("-------- error: --------")
+                NSLog(error?.localizedDescription ?? "no error received")
+                NSLog("-------- response: --------")
+                NSLog(String(describing: response))
+                NSLog("-------- data: --------")
+                NSLog(String(decoding: data ?? Data(), as: UTF8.self))
+                
+                /// debug
+                let result: Sensor = Sensor(lightlevel: 1010, dark: true, daylight: false, lastupdated: "2023-10-01T01:01:01Z", tholddark: 16000)
+                completion(result)
+            }
+        }).resume()
     }
 }
 
@@ -163,7 +225,7 @@ struct HueV1Info: View {
             
             
             if let sensor: HueV1.Sensor = sensorData {
-                Text("\(sensor.lightlevel) lux, at \(ISO8601DateFormatter().date(from: sensor.lastupdated)?.formatted(date: .omitted, time: .standard) ?? "-")")
+                Text("\(sensor.lightlevel) lux, at \(ISO8601DateFormatter().date(from: sensor.lastupdated + "Z")?.formatted(date: .omitted, time: .standard) ?? "-")")
             } else {
                 HStack(content: {
                     Image(systemName: "exclamationmark.triangle")

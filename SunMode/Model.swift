@@ -5,16 +5,23 @@ import SwiftUI
 
 class Model: ObservableObject {
     @Published var systemAppearance: SystemAppearances = .light
-    @Published var systemAppearance2: SystemAppearances = .light
     @AppStorage("mode") var mode: Modes = .none
-    @AppStorage("menuBarIconAdvanced") var menuBarIconAdvanced: Bool = true
+    @Published var settings: Settings = (try? PropertyListDecoder().decode(Settings.self, from: UserDefaults.standard.value(forKey: "settings") as? Data ?? Data())) ?? Settings()
+    // @AppStorage("menuBarIconAdvanced") var menuBarIconAdvanced: Bool = true
     
+    @Published var refreshTimer: Timer? = nil       /// timer for refreshing external sensor data
+    
+    /// Modes
     @Published var coord: Coordinates = (try? PropertyListDecoder().decode(Coordinates.self, from: UserDefaults.standard.value(forKey: "coord") as? Data ?? Data())) ?? Coordinates()
     @Published var hueV1: HueV1 = (try? PropertyListDecoder().decode(HueV1.self, from: UserDefaults.standard.value(forKey: "hueV1") as? Data ?? Data())) ?? HueV1()
     @Published var staticTime: StaticTime = (try? PropertyListDecoder().decode(StaticTime.self, from: UserDefaults.standard.value(forKey: "staticTime") as? Data ?? Data())) ?? StaticTime()
+    enum Modes: String, CaseIterable {
+        case none = "Off"
+        case coord = "Coordinates"
+        case hueV1 = "Hue V1"
+        case staticTime = "Static Time"
+    }
     
-    @Published var refreshTimer: Timer? = nil       /// timer for refreshing external sensor data
-    @Published var appearanceTimer: Timer? = nil    /// timer for triggering next mode change
     
     /// Debugging saved values
     // init() {
@@ -55,107 +62,48 @@ class Model: ObservableObject {
     //     }
     // }
     
-    enum Modes: String, CaseIterable {
-        case none = "Off"
-        case hueV1 = "Hue V1"
-        case coord = "Coordinates"
-        case staticTime = "Static Time"
-    }
-    
+    // MARK: Functions
     func startMode() {
         print("startMode")
-        appearanceTimer?.invalidate()
         refreshTimer?.invalidate()
         
-        var modeAppearance: SystemAppearances?
-        var nextAppearance: (TimeInterval, SystemAppearances)?
-        var nextRefreshInterval: TimeInterval?
-        
-        /// check current Appearance and set interval, so timer gets started
+        /// sets current appropiate system appearance
         switch mode {
             case .none:
-                modeAppearance = getSystemAppearance()
-                return
+                break
             case .coord:
-                modeAppearance = coord.currAppearance
-                nextAppearance = coord.nextAppearance
+                systemAppearance = coord.currAppearance
+                updateSystemMode(to: coord.currAppearance)
             case .hueV1:
-                modeAppearance = hueV1.currAppearance
-                nextRefreshInterval = TimeInterval(hueV1.refreshInterval * 60)
+                hueV1.getSensorStatusCompletion(completion: { sensor in
+                    if let modeAppearance = self.hueV1.getCurrAppearanceForCompletion(sensor: sensor) {
+                        self.systemAppearance = modeAppearance
+                        updateSystemMode(to: modeAppearance)
+                    }
+                })
             case .staticTime:
-                modeAppearance = staticTime.currAppearance
-                nextAppearance = staticTime.nextAppearance
+                systemAppearance = staticTime.currAppearance
+                updateSystemMode(to: staticTime.currAppearance)
         }
         
-        /// set current appearance to correct mode appearance
-        if let newAppearance = modeAppearance {
-            systemAppearance = newAppearance
+        /// sets timer for next recursion
+        var interval: TimeInterval?
+        switch mode {
+            case .none:         break
+            case .coord:        interval = coord.nextAppearance.0
+            case .hueV1:        interval = TimeInterval(hueV1.refreshInterval * 60)
+            case .staticTime:   interval = staticTime.nextAppearance.0
         }
         
-        
-        /// use if (instead of guard) so both optional variables get checked & only set timer if interval is given
-        if let (interval, appearance) = nextAppearance {
-            appearanceTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false, block: { timer in
-                self.systemAppearance = appearance
-                
+        if let interval = interval {
+            refreshTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false, block: { timer in
                 timer.invalidate()
-                NSLog("appearanceTimer invalidated")
                 
-                /// init new timer 10 sec later
-                DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
                     self.startMode()
-                }
-            })
-            appearanceTimer?.tolerance = 10
-            NSLog("\(appearance) at: \(Date.init(timeIntervalSinceNow: interval))")
-        }
-        
-        if let nextRefreshInterval = nextRefreshInterval {
-            refreshTimer = Timer.scheduledTimer(withTimeInterval: nextRefreshInterval, repeats: true, block: { timer in
-                switch self.mode {
-                    case .hueV1:
-                        if let newAppearance = modeAppearance {
-                            self.systemAppearance = newAppearance
-                        }
-                    default:
-                        NSLog("no mode found")
-                }
+                })
             })
             refreshTimer?.tolerance = 10
-            NSLog("\(String(describing: modeAppearance)) refresh: \(Date.init(timeIntervalSinceNow: nextRefreshInterval))")
-        }
-    }
-}
-
-// MARK: System Functions
-enum SystemAppearances: String, CaseIterable {
-    case light = "Light"
-    case dark = "Dark"
-}
-
-func getSystemAppearance() -> SystemAppearances {
-    switch NSApp.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) {
-        case .aqua?: return .light
-        case .darkAqua?: return .dark
-        default: return .light
-    }
-}
-func updateSystemMode(to appearance: SystemAppearances?) {
-    /// dont update if appearance is already set or nil
-    if appearance == getSystemAppearance() { return }
-    guard let appearance = appearance else { return }
-    
-    let script = """
-        tell application "System Events" to tell appearance preferences to set dark mode to \(appearance == .dark ? "true" : "false")
-    """
-    
-    let appleScript = NSAppleScript(source: script)
-    var errorDict: NSDictionary? = nil
-    
-    DispatchQueue.global(qos: .background).async {
-        let possibleResult = appleScript?.executeAndReturnError(&errorDict)
-        if errorDict != nil {
-            NSLog("error: \(String(describing: errorDict)), result:\(String(describing: possibleResult))")
         }
     }
 }

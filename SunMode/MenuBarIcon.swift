@@ -12,7 +12,7 @@ struct MenuBarIcon: View {
         
         switch model.mode {
             case .coord:
-                if model.menuBarIconAdvanced {
+                if model.settings.menuBarIconAdvanced {
                     iconName = model.coord.nextChanges.1
                     iconText = model.coord.nextChanges.0.formatted(date: .omitted, time: .shortened)
                 }
@@ -20,11 +20,11 @@ struct MenuBarIcon: View {
                 guard let sensorData: HueV1.Sensor = model.hueV1.sensorData else {
                     return ("exclamationmark.triangle", model.mode.rawValue)
                 }
-                if model.menuBarIconAdvanced {
+                if model.settings.menuBarIconAdvanced {
                     iconText = "\(sensorData.lightlevel)lux"
                 }
             case .staticTime:
-                if model.menuBarIconAdvanced {
+                if model.settings.menuBarIconAdvanced {
                     iconName = model.staticTime.nextChanges.1
                     iconText = model.staticTime.nextChanges.0.formatted(date: .omitted, time: .shortened)
                 }

@@ -4,8 +4,12 @@
 import SwiftUI
 import CoreLocation
 
+/// locationManager gets initalized onAppear of CoordinatesInputs and not on MenuBarIcon, test?????, locationManager may get saved in UserDefaults so ignore
+
 struct ContentView: View {
     @ObservedObject var model: Model
+    
+    @State private var showSettings: Bool = false
     
     var body: some View {
         VStack(content: {
@@ -23,7 +27,14 @@ struct ContentView: View {
                         .font(.body)
                 })
                 
-                Picker("System Mode", selection: $model.systemAppearance, content: {
+                let pickerBinding: Binding<SystemAppearances> = Binding(
+                    get: { model.systemAppearance },
+                    set: {
+                        model.systemAppearance = $0
+                        updateSystemMode(to: $0)
+                    }
+                )
+                Picker("System Mode", selection: pickerBinding, content: {
                     ForEach(SystemAppearances.allCases, id: \.self, content: { appearance in
                         Text(appearance.rawValue).tag(appearance)
                     })
@@ -32,25 +43,25 @@ struct ContentView: View {
                 .labelsHidden()
             })
             
-            // MARK: Inputs
-            switch model.mode {
-                case .none:         EmptyView()
-                case .coord:        CoordinatesInputs(coord: $model.coord)
-                case .hueV1:        HueV1Inputs(hueV1: $model.hueV1)
-                case .staticTime:   StaticTimeInputs(staticTime: $model.staticTime)
+            if showSettings {
+                // MARK: Settings
+                SettingsInputs(settings: $model.settings)
+                
+            } else {
+                // MARK: Inputs
+                switch model.mode {
+                    case .none:         EmptyView()
+                    case .coord:        CoordinatesInputs(coord: $model.coord)
+                    case .hueV1:        HueV1Inputs(hueV1: $model.hueV1)
+                    case .staticTime:   StaticTimeInputs(staticTime: $model.staticTime)
+                }
             }
             
             // MARK: Footer
             HStack(content: {
-                Toggle(isOn: $model.menuBarIconAdvanced, label: { Text("MenuBarIcon Toggle") })
-                    .toggleStyle(.switch)
-                    .labelsHidden()
-                    .scaleEffect(0.75)
-                    .padding(.trailing, -10)
-                    .help("MenuBarIcon: show next Sunset/Sunrise or current lightlevel")
-                
                 Spacer()
                 
+                // MARK: Info
                 Group(content: {
                     switch model.mode {
                         case .coord:
@@ -72,20 +83,16 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Button("Quit", action: quitAction)
+                Button(action: {
+                    showSettings.toggle()
+                }, label: {
+                    Image(systemName: showSettings ? "chevron.left.square" : "gear")
+                })
             })
             .buttonStyle(.link)
         })
         .formStyle(.grouped)
         .padding(8)
-    }
-    
-    // MARK: Button actions
-    private func toggleAction() {
-        model.menuBarIconAdvanced.toggle()
-    }
-    private func quitAction() {
-        NSApplication.shared.terminate(nil)
     }
 }
 

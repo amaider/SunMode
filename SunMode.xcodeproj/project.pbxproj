@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F91A9D6E29F5CDF300C59350 /* SystemFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */; };
 		F966426129EC71470022FDC3 /* SunModeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426029EC71470022FDC3 /* SunModeApp.swift */; };
 		F966426329EC71470022FDC3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426229EC71470022FDC3 /* ContentView.swift */; };
 		F966426529EC714B0022FDC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F966426429EC714B0022FDC3 /* Assets.xcassets */; };
@@ -19,9 +20,11 @@
 		F966428029EC74B40022FDC3 /* SunKit in Frameworks */ = {isa = PBXBuildFile; productRef = F966427F29EC74B40022FDC3 /* SunKit */; };
 		F966428229EC779D0022FDC3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966428129EC779D0022FDC3 /* LocationManager.swift */; };
 		F966428429EC7A580022FDC3 /* Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966428329EC7A580022FDC3 /* Coordinates.swift */; };
+		F968434029F1A747001A3EE5 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F968433F29F1A747001A3EE5 /* Settings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemFunctions.swift; sourceTree = "<group>"; };
 		F966425D29EC71470022FDC3 /* SunMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SunMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F966426029EC71470022FDC3 /* SunModeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunModeApp.swift; sourceTree = "<group>"; };
 		F966426229EC71470022FDC3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -35,6 +38,7 @@
 		F966427C29EC737F0022FDC3 /* StaticTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticTime.swift; sourceTree = "<group>"; };
 		F966428129EC779D0022FDC3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		F966428329EC7A580022FDC3 /* Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinates.swift; sourceTree = "<group>"; };
+		F968433F29F1A747001A3EE5 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,7 @@
 				F966426F29EC71E90022FDC3 /* MenuBarIcon.swift */,
 				F966427329EC72680022FDC3 /* Modes */,
 				F966427129EC722C0022FDC3 /* Model.swift */,
+				F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */,
 				F966427629EC72A20022FDC3 /* Extensions.swift */,
 				F966426429EC714B0022FDC3 /* Assets.xcassets */,
 				F966426929EC714B0022FDC3 /* SunMode.entitlements */,
@@ -96,6 +101,7 @@
 				F966428329EC7A580022FDC3 /* Coordinates.swift */,
 				F966427A29EC73760022FDC3 /* HueV1.swift */,
 				F966427C29EC737F0022FDC3 /* StaticTime.swift */,
+				F968433F29F1A747001A3EE5 /* Settings.swift */,
 			);
 			path = Modes;
 			sourceTree = "<group>";
@@ -178,8 +184,10 @@
 			files = (
 				F966426329EC71470022FDC3 /* ContentView.swift in Sources */,
 				F966427029EC71E90022FDC3 /* MenuBarIcon.swift in Sources */,
+				F91A9D6E29F5CDF300C59350 /* SystemFunctions.swift in Sources */,
 				F966428429EC7A580022FDC3 /* Coordinates.swift in Sources */,
 				F966427729EC72A20022FDC3 /* Extensions.swift in Sources */,
+				F968434029F1A747001A3EE5 /* Settings.swift in Sources */,
 				F966426129EC71470022FDC3 /* SunModeApp.swift in Sources */,
 				F966427229EC722C0022FDC3 /* Model.swift in Sources */,
 				F966428229EC779D0022FDC3 /* LocationManager.swift in Sources */,
