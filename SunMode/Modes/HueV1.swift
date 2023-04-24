@@ -22,7 +22,7 @@ struct HueV1: Codable {
     var refreshInterval: Int = 5
     
     var sensorData: Sensor?
-    var restartMode: Bool = false   /// single variable for onChange to subscribe to, instead of each single variable seperately
+    var restartMode: Bool = false   /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
     
     var currAppearance: SystemAppearances? {
         // guard let currSensor = self.sensorData else { return nil }

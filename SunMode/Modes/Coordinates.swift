@@ -15,7 +15,7 @@ struct Coordinates: Codable {
     var sunsetOffset: Int = -30
     
     var locationName: String = ""
-    var restartMode: Bool = false   /// single variable for onChange to subscribe to instead of each single variable seperately
+    var restartMode: Bool = false   /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
     
     /// Helpers
     private var _sun: Sun {

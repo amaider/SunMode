@@ -8,8 +8,7 @@ struct StaticTime: Codable {
     var sunrise: Date = Date.now
     var sunset: Date = Date.now
     
-    /// single variable for onChange to subscribe to instead of each single variable seperately
-    var restartMode: Bool = false
+    var restartMode: Bool = false   /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
     
     /// Helpers
     private var _sunriseComponents: DateComponents { Calendar.current.dateComponents([.hour, .minute], from: self.sunrise) }

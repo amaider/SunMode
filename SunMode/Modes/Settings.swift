@@ -7,8 +7,7 @@ struct Settings: Codable {
     var menuBarIconAdvanced: Bool = true
     var hasLauncDeamon: Bool = false
     
-    /// single variable for onChange to subscribe to instead of each single variable seperately
-    var restartMode: Bool = false
+    // var restartMode: Bool = false    /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
 }
 
 // MARK: Settings Inputs
