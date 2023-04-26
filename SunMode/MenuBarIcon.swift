@@ -34,9 +34,11 @@ struct MenuBarIcon: View {
         return (iconName, iconText)
     }
     
+    // MARK: Icon
     var body: some View {
         HStack(content: {
             Image(systemName: iconTuple.0)
+            
             if !iconTuple.1.isEmpty {
                 Text(iconTuple.1)
             }

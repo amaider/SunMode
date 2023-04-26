@@ -171,9 +171,11 @@ struct CoordinatesInfo: View {
     var body: some View {
         HStack(content: {
             Image(systemName: nextChanges.1)
+                .foregroundStyle(.primary, .yellow)
             Text(nextChanges.0.formatted(date: .omitted, time: .shortened))
             Text("|")
             Image(systemName: nextChanges.3)
+                .foregroundStyle(.primary, .yellow)
             Text(nextChanges.2.formatted(date: .omitted, time: .shortened))
         })
     }

@@ -49,7 +49,7 @@ struct SettingsInputs: View {
         
         Button("Quit SunMode", action: quitAction)
         
-        Text("SunMode v1.0")
+        Text("SunMode v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)")
             .foregroundColor(.gray)
     }
     
