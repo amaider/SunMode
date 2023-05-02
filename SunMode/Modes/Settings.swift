@@ -47,10 +47,14 @@ struct SettingsInputs: View {
             .scaleEffect(0.75)
             .padding(.trailing, -10)
         
-        Button("Quit SunMode", action: quitAction)
-        
-        Text("SunMode v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)")
-            .foregroundColor(.gray)
+        HStack(content: {
+            Text("SunMode v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)")
+                .foregroundColor(.gray)
+            
+            // Spacer()
+            
+            Button("Quit SunMode", action: quitAction)
+        })
     }
     
     // MARK: Functions

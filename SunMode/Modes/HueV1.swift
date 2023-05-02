@@ -23,6 +23,23 @@ struct HueV1: Codable {
     
     var sensorData: Sensor?
     var restartMode: Bool = false   /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
+
+    /// https://discovery.meethue.com Struct
+    struct MeetHue: Decodable {
+        let id: String
+        let internalipaddress: String
+        let port: Int
+    }
+    func findBridgeIP(completion: @escaping (String) -> Void) {
+        URLSession.shared.dataTask(with: URL(string: "https://discovery.meethue.com")!) { data, response, error in
+            if let data = data,
+               error == nil,
+               let discoveryStruct: [MeetHue] = try? JSONDecoder().decode([MeetHue].self, from: data),
+               let ipAddress: String = discoveryStruct.first?.internalipaddress {
+                completion(ipAddress)
+            }
+        }.resume()
+    }
     
     var currAppearance: SystemAppearances? {
         // guard let currSensor = self.sensorData else { return nil }
@@ -159,9 +176,17 @@ struct HueV1Inputs: View {
             .onChange(of: hueV1.customThreshold, perform: saveChange)
             .onChange(of: hueV1.refreshInterval, perform: saveChange)
         
-        LabeledContent("Bridge IP", content: {
+        LabeledContent(content: {
             TextField("Bridge IP", text: $hueV1.ipAddress, prompt: Text("192.168.x.x"))
                 .textFieldStyle(.custom)
+        }, label: {
+            HStack(content: {
+                Text("Bridge IP")
+                Button(action: findBridgeAction, label: {
+                    Image(systemName: "magnifyingglass")
+                })
+                .buttonStyle(.plain)
+            })
         })
         LabeledContent("API Key", content: {
             TextField("API Key", text: $hueV1.apiKey)
@@ -195,6 +220,11 @@ struct HueV1Inputs: View {
     }
     
     // MARK: Functions
+    private func findBridgeAction() {
+        hueV1.findBridgeIP(completion: { ipAddress in
+            hueV1.ipAddress = ipAddress
+        })
+    }
     private func saveChange(_ any: any Equatable) {
         hueV1.restartMode.toggle()
         UserDefaults.standard.set(try? PropertyListEncoder().encode(hueV1), forKey: "hueV1")
