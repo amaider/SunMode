@@ -64,7 +64,7 @@ class Model: ObservableObject {
     
     // MARK: Functions
     func startMode() {
-        print("startMode")
+        // print("startMode")
         refreshTimer?.invalidate()
         
         /// sets current appropiate system appearance
@@ -75,11 +75,16 @@ class Model: ObservableObject {
                 systemAppearance = coord.currAppearance
                 updateSystemMode(to: coord.currAppearance)
             case .hueV1:
-                hueV1.getSensorStatusCompletion(completion: { sensor in
-                    if let modeAppearance = self.hueV1.getCurrAppearanceForCompletion(sensor: sensor) {
-                        self.systemAppearance = modeAppearance
-                        updateSystemMode(to: modeAppearance)
-                    }
+                self.hueV1.getSensorStatus(completion: { sensor in
+                    DispatchQueue.main.async(execute: {
+                        self.hueV1.sensorData = sensor
+                        // self.systemAppearance = self.hueV1.getCurrAppearanceForCompletion(sensor: sensor)
+                        
+                        if let modeAppearance: SystemAppearances = self.hueV1.currAppearance {
+                            self.systemAppearance = modeAppearance
+                            updateSystemMode(to: self.systemAppearance)
+                        }
+                    })
                 })
             case .staticTime:
                 systemAppearance = staticTime.currAppearance

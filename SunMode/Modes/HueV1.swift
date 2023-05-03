@@ -23,80 +23,8 @@ struct HueV1: Codable {
     
     var sensorData: Sensor?
     var restartMode: Bool = false   /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
-
-    /// https://discovery.meethue.com Struct
-    struct MeetHue: Decodable {
-        let id: String
-        let internalipaddress: String
-        let port: Int
-    }
-    func findBridgeIP(completion: @escaping (String) -> Void) {
-        URLSession.shared.dataTask(with: URL(string: "https://discovery.meethue.com")!) { data, response, error in
-            if let data = data,
-               error == nil,
-               let discoveryStruct: [MeetHue] = try? JSONDecoder().decode([MeetHue].self, from: data),
-               let ipAddress: String = discoveryStruct.first?.internalipaddress {
-                completion(ipAddress)
-            }
-        }.resume()
-    }
     
     var currAppearance: SystemAppearances? {
-        // guard let currSensor = self.sensorData else { return nil }
-        guard let currSensor: Sensor = getSensorStatus() else { return nil }
-        
-        if useBridgeThreshold {
-            return currSensor.dark ? .dark : .light
-        } else {
-            return currSensor.lightlevel < customThreshold ? .dark : .light
-        }
-    }
-    
-    private func getSensorStatus() -> Sensor? {
-        var result: Sensor? = nil
-        
-        let url = URL(string: "http://\(ipAddress)/api/\(apiKey)/sensors/\(sensorNumber)")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
-            if let data = data, error == nil {
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data)  as? [String: Any]
-                    // NSLog("-------- json: --------")
-                    // NSLog(String(describing: json))
-                    
-                    /// parse values
-                    if let state = json?["state"] as? [String: Any],
-                       let lightlevel: Int = state["lightlevel"] as? Int,
-                       let dark: Bool = state["dark"] as? Bool,
-                       let daylight: Bool = state["daylight"] as? Bool,
-                       let lastupdated: String = state["lastupdated"] as? String,
-                       let config = json?["config"] as? [String: Any],
-                       let tholddark: Int = config["tholddark"] as? Int {
-                        /// all values were found
-                        result = Sensor(lightlevel: lightlevel, dark: dark, daylight: daylight, lastupdated: lastupdated, tholddark: tholddark)
-                        print(result)
-                    }
-                } catch {
-                    NSLog("-------- json error: --------")
-                    NSLog(String(describing: error))
-                }
-            } else {
-                /// urlsession error
-                NSLog("-------- error: --------")
-                NSLog(error?.localizedDescription ?? "no error received")
-                NSLog("-------- response: --------")
-                NSLog(String(describing: response))
-                NSLog("-------- data: --------")
-                NSLog(String(decoding: data ?? Data(), as: UTF8.self))
-            }
-        }).resume()
-
-        return result
-    }
-    
-    var currAppearanceForCompletion: SystemAppearances? {
         guard let currSensor = self.sensorData else { return nil }
         
         if useBridgeThreshold {
@@ -105,14 +33,8 @@ struct HueV1: Codable {
             return currSensor.lightlevel < customThreshold ? .dark : .light
         }
     }
-    func getCurrAppearanceForCompletion(sensor: Sensor) -> SystemAppearances? {
-        if useBridgeThreshold {
-            return sensor.dark ? .dark : .light
-        } else {
-            return sensor.lightlevel < customThreshold ? .dark : .light
-        }
-    }
-    func getSensorStatusCompletion(completion: @escaping (Sensor) -> Void) {
+    
+    func getSensorStatus(completion: @escaping (Sensor) -> Void) {
         let url = URL(string: "http://\(ipAddress)/api/\(apiKey)/sensors/\(sensorNumber)")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -151,8 +73,26 @@ struct HueV1: Codable {
                 NSLog(String(decoding: data ?? Data(), as: UTF8.self))
                 
                 /// debug
-                let result: Sensor = Sensor(lightlevel: 1010, dark: true, daylight: false, lastupdated: "2023-10-01T01:01:01Z", tholddark: 16000)
-                completion(result)
+                // let result: Sensor = Sensor(lightlevel: 1010, dark: true, daylight: false, lastupdated: "2023-10-01T01:01:01Z", tholddark: 16000)
+                // completion(result)
+            }
+        }).resume()
+    }
+    
+    
+    /// https://discovery.meethue.com Struct
+    struct MeetHue: Decodable {
+        let id: String
+        let internalipaddress: String
+        let port: Int
+    }
+    func findBridgeIP(completion: @escaping (String) -> Void) {
+        URLSession.shared.dataTask(with: URL(string: "https://discovery.meethue.com")!, completionHandler: { data, response, error in
+            if let data = data,
+               error == nil,
+               let discoveryStruct: [MeetHue] = try? JSONDecoder().decode([MeetHue].self, from: data),
+               let ipAddress: String = discoveryStruct.first?.internalipaddress {
+                completion(ipAddress)
             }
         }).resume()
     }
