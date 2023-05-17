@@ -16,11 +16,11 @@ struct ContentView: View {
             // MARK: Header
             HStack(content: {
                 Menu(content: {
-                    ForEach(Model.Modes.allCases, id: \.hashValue) { mode in
+                    ForEach(Model.Modes.allCases, id: \.hashValue, content: { mode in
                         Button(mode.rawValue, action: {
                             model.mode = mode
                         })
-                    }
+                    })
                 }, label: {
                     Text(model.mode.rawValue)
                         .fontWeight(.semibold)

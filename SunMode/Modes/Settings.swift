@@ -51,8 +51,6 @@ struct SettingsInputs: View {
             Text("SunMode v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)")
                 .foregroundColor(.gray)
             
-            // Spacer()
-            
             Button("Quit SunMode", action: quitAction)
         })
     }

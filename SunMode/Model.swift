@@ -75,10 +75,9 @@ class Model: ObservableObject {
                 systemAppearance = coord.currAppearance
                 updateSystemMode(to: coord.currAppearance)
             case .hueV1:
-                self.hueV1.getSensorStatus(completion: { sensor in
+                self.hueV1.getSensorStatus(completion: { sensorData in
                     DispatchQueue.main.async(execute: {
-                        self.hueV1.sensorData = sensor
-                        // self.systemAppearance = self.hueV1.getCurrAppearanceForCompletion(sensor: sensor)
+                        self.hueV1.sensorData = sensorData
                         
                         if let modeAppearance: SystemAppearances = self.hueV1.currAppearance {
                             self.systemAppearance = modeAppearance

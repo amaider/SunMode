@@ -17,7 +17,7 @@ struct MenuBarIcon: View {
                     iconText = model.coord.nextChanges.0.formatted(date: .omitted, time: .shortened)
                 }
             case .hueV1:
-                guard let sensorData: HueV1.Sensor = model.hueV1.sensorData else {
+                guard let sensorData: HueV1.SensorData = model.hueV1.sensorData else {
                     return ("exclamationmark.triangle", model.mode.rawValue)
                 }
                 if model.settings.menuBarIconAdvanced {

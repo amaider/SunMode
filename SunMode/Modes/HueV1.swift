@@ -5,7 +5,7 @@ import SwiftUI
 import Foundation
 
 struct HueV1: Codable {
-    struct Sensor: Codable {
+    struct SensorData: Codable {
         let lightlevel: Int
         let dark: Bool
         let daylight: Bool
@@ -21,7 +21,7 @@ struct HueV1: Codable {
     
     var refreshInterval: Int = 5
     
-    var sensorData: Sensor?
+    var sensorData: SensorData?
     var restartMode: Bool = false   /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
     
     var currAppearance: SystemAppearances? {
@@ -34,15 +34,35 @@ struct HueV1: Codable {
         }
     }
     
-    func getSensorStatus(completion: @escaping (Sensor) -> Void) {
-        let url = URL(string: "http://\(ipAddress)/api/\(apiKey)/sensors/\(sensorNumber)")!
+    struct Bridge11: Codable {
+        var id: UUID = UUID()
+        let name: String
+        let ipAddress: String
+    }
+    struct Sensor: Codable {
+        var id: UUID = UUID()
+        let name: String
+        let number: Int
+    }
+    var foundBridges: [Bridge11] = []
+    var foundSensors: [Sensor] = []
+    
+    
+    
+    // MARK: Functions
+    func getSensorStatus(completion: @escaping (SensorData) -> Void) {
+        guard let url = URL(string: "http://\(ipAddress)/api/\(apiKey)/sensors/\(sensorNumber)") else {
+            print("fuck url sensor")
+            return
+        }
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
         URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
             if let data = data, error == nil {
                 do {
-                    let json = try JSONSerialization.jsonObject(with: data)  as? [String: Any]
+                    let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
                     // NSLog("-------- json: --------")
                     // NSLog(String(describing: json))
                     
@@ -56,7 +76,7 @@ struct HueV1: Codable {
                        let tholddark: Int = config["tholddark"] as? Int {
                         
                         /// all values were found
-                        let result: Sensor = Sensor(lightlevel: lightlevel, dark: dark, daylight: daylight, lastupdated: lastupdated, tholddark: tholddark)
+                        let result: SensorData = SensorData(lightlevel: lightlevel, dark: dark, daylight: daylight, lastupdated: lastupdated, tholddark: tholddark)
                         completion(result)
                     }
                 } catch {
@@ -80,19 +100,91 @@ struct HueV1: Codable {
     }
     
     
-    /// https://discovery.meethue.com Struct
-    struct MeetHue: Decodable {
-        let id: String
-        let internalipaddress: String
-        let port: Int
+    /// completion: (success, API Key)
+    func createAPIKey(completion: @escaping (Bool, String) -> Void) {
+        guard let url: URL = URL(string: "\(self.ipAddress)/api") else {
+            completion(false, "no IP Address")
+            return
+        }
+        
+        let bodyString = "{\"devicetype\":\"SunMode#MacOS\"}"
+        guard let bodyData = bodyString.data(using: .utf8) else { return }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = bodyData
+        
+        URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+            if let data = data, error == nil {
+                do {
+                    let json2 = try JSONSerialization.jsonObject(with: data) as? [Any]
+                    let json = json2?.first as? [String: Any]
+                    // NSLog("-------- json: --------")
+                    // NSLog(String(describing: json))
+                    
+                    /// parse values
+                    if let error = json?["error"] as? [String: Any],
+                       let errorDescription: String = error["description"] as? String {
+                        completion(false, errorDescription)
+                    } else if let success = json?["success"] as? [String: Any],
+                              let apiKey: String = success["username"] as? String {
+                        completion(true, apiKey)
+                    } else {
+                        completion(false, "unknown error")
+                    }
+                } catch {
+                    NSLog("-------- json error: --------")
+                    NSLog(String(describing: error))
+                }
+            } else {
+                /// urlsession error
+                NSLog("-------- error: --------")
+                NSLog(error?.localizedDescription ?? "no error received")
+                NSLog("-------- response: --------")
+                NSLog(String(describing: response))
+                NSLog("-------- data: --------")
+                NSLog(String(decoding: data ?? Data(), as: UTF8.self))
+                completion(false, "")
+            }
+        }).resume()
     }
-    func findBridgeIP(completion: @escaping (String) -> Void) {
-        URLSession.shared.dataTask(with: URL(string: "https://discovery.meethue.com")!, completionHandler: { data, response, error in
-            if let data = data,
-               error == nil,
-               let discoveryStruct: [MeetHue] = try? JSONDecoder().decode([MeetHue].self, from: data),
-               let ipAddress: String = discoveryStruct.first?.internalipaddress {
-                completion(ipAddress)
+    
+    /// completion: (Name, Sensor Number)
+    func findLightSensors(completion: @escaping (String, Int) -> Void) {
+        guard let url = URL(string: "http://\(ipAddress)/api/\(apiKey)/sensors/") else {
+            print("fuck this url2, no ipAddress or apiKey")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url, completionHandler: { data, response, error in
+            if let data = data, error == nil {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                    // NSLog("-------- json: --------")
+                    // NSLog(String(describing: json))
+                    
+                    for (key, _) in json ?? [:] {
+                        if let sensor = json?[key] as? [String: Any],
+                           let name: String = sensor["name"] as? String,
+                           let type: String = sensor["type"] as? String,
+                           type == "ZLLLightLevel" {
+                            guard let sensorNumber: Int = Int(key) else { return }
+                            /// got name and sensor number
+                            completion(name, sensorNumber)
+                        }
+                    }
+                } catch {
+                    NSLog("-------- json error: --------")
+                    NSLog(String(describing: error))
+                }
+            } else {
+                /// urlsession error
+                NSLog("-------- error: --------")
+                NSLog(error?.localizedDescription ?? "no error received")
+                NSLog("-------- response: --------")
+                NSLog(String(describing: response))
+                NSLog("-------- data: --------")
+                NSLog(String(decoding: data ?? Data(), as: UTF8.self))
             }
         }).resume()
     }
@@ -101,6 +193,8 @@ struct HueV1: Codable {
 // MARK: HueV1 Inputs
 struct HueV1Inputs: View {
     @Binding var hueV1: HueV1
+    
+    var hueDiscovery: HueBridgeDiscovery = HueBridgeDiscovery()
     
     var body: some View {
         LabeledContent("Refresh Interval (min)", content: {
@@ -122,19 +216,47 @@ struct HueV1Inputs: View {
         }, label: {
             HStack(content: {
                 Text("Bridge IP")
+                
                 Button(action: findBridgeAction, label: {
                     Image(systemName: "magnifyingglass")
                 })
                 .buttonStyle(.plain)
+                .help("Search for Philips Hue Bridges")
+                .sheet(isPresented: .constant(!hueV1.foundBridges.isEmpty), content: { bridgeSheet })
             })
         })
-        LabeledContent("API Key", content: {
+        
+        LabeledContent(content: {
             TextField("API Key", text: $hueV1.apiKey)
                 .textFieldStyle(.custom)
+        }, label: {
+            HStack(content: {
+                Text("API Key")
+                
+                Button(action: createAPIKeyAction, label: {
+                    Image(systemName: "plus")
+                })
+                .buttonStyle(.plain)
+                .disabled(!hueV1.apiKey.isEmpty)
+                .help(hueV1.ipAddress.isEmpty ? "Missing IP Address" : !hueV1.apiKey.isEmpty ? "Delete current API Key to create a new Key" : "Create New API Key")
+            })
         })
-        LabeledContent("Sensor number", content: {
+        
+        LabeledContent(content: {
             TextField("Sensor number", value: $hueV1.sensorNumber, format: .number)
                 .textFieldStyle(.custom)
+        }, label: {
+            HStack(content: {
+                Text("Sensor Number")
+                
+                Button(action: findSensorAction, label: {
+                    Image(systemName: "magnifyingglass")
+                })
+                .buttonStyle(.plain)
+                .help(hueV1.ipAddress.isEmpty ? "Missing IP Address" : hueV1.apiKey.isEmpty ? "Missing API Key" : "Search for Sensors")
+                .disabled(hueV1.ipAddress.isEmpty || hueV1.apiKey.isEmpty)
+                .sheet(isPresented: .constant(!hueV1.foundSensors.isEmpty), content: { sensorSheet })
+            })
         })
         
         Divider()
@@ -159,10 +281,98 @@ struct HueV1Inputs: View {
         }
     }
     
+    
+    // MARK: Alerts
+    var bridgeSheet: some View {
+        VStack(content: {
+            HStack(content: {
+                HueBridgeIcon(size: 50, version: 0)
+                Text(hueV1.foundBridges.isEmpty ? "Searching..." : "Select Bridge")
+                    .font(.headline)
+            })
+            
+            ForEach(hueV1.foundBridges, id: \.id, content: { bridge in
+                Button(action: {
+                    hueV1.ipAddress = bridge.ipAddress
+                    
+                    hueV1.foundBridges = []
+                }, label: {
+                    Text("\(bridge.name) - \(bridge.ipAddress)")
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                })
+            })
+            
+            Divider()
+            
+            Button(action: {
+                hueV1.foundBridges = []
+            }, label: {
+                Text("Done")
+                    .frame(minWidth: 0, maxWidth: .infinity)
+            })
+            .tint(.red)
+        })
+        .padding()
+        .controlSize(.large)
+        .frame(minWidth: 0, maxWidth: .infinity)
+    }
+    var sensorSheet: some View {
+        VStack(content: {
+            HStack(content: {
+                HueSensorIcon(size: 50)
+                Text(hueV1.foundSensors.isEmpty ? "Searching..." : "Select Sensor")
+                    .font(.headline)
+            })
+            
+            ForEach(hueV1.foundSensors, id: \.id, content: { sensor in
+                Button(action: {
+                    hueV1.sensorNumber = sensor.number
+                    
+                    hueV1.foundSensors = []
+                }, label: {
+                    Text("\(sensor.name) - \(sensor.number)")
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                })
+            })
+            
+            Divider()
+            
+            Button(action: {
+                hueV1.foundSensors = []
+            }, label: {
+                Text("Done")
+                    .frame(minWidth: 0, maxWidth: .infinity)
+            })
+        })
+        .padding()
+        .controlSize(.large)
+        .frame(minWidth: 0, maxWidth: .infinity)
+    }
+    
     // MARK: Functions
     private func findBridgeAction() {
-        hueV1.findBridgeIP(completion: { ipAddress in
-            hueV1.ipAddress = ipAddress
+        hueV1.foundBridges = []
+        
+        hueDiscovery.startDiscovery(completion: { name, ipAddress in
+            let newBridge: HueV1.Bridge11 = .init(name: name, ipAddress: ipAddress)
+            hueV1.foundBridges.append(newBridge)
+        })
+    }
+    private func createAPIKeyAction() {
+        hueV1.createAPIKey(completion: { success, apiKey in
+            DispatchQueue.main.async(execute: {
+                hueV1.apiKey = apiKey
+            })
+        })
+    }
+    private func findSensorAction() {
+        hueV1.foundSensors = []
+        
+        hueV1.findLightSensors(completion: { name, sensorNumber in
+            let newSensor: HueV1.Sensor = .init(name: name, number: sensorNumber)
+            DispatchQueue.main.async(execute: {
+                hueV1.foundSensors.append(newSensor)
+            })
         })
     }
     private func saveChange(_ any: any Equatable) {
@@ -174,7 +384,7 @@ struct HueV1Inputs: View {
 // MARK: HueV1 Info
 struct HueV1Info: View {
     let refreshTimer: Timer?
-    let sensorData: HueV1.Sensor?
+    let sensorData: HueV1.SensorData?
     
     @State private var updateViewTimer: Timer?
     @State private var now: Date = Date.now
@@ -194,7 +404,7 @@ struct HueV1Info: View {
             }
             
             
-            if let sensor: HueV1.Sensor = sensorData {
+            if let sensor: HueV1.SensorData = sensorData {
                 Text("\(sensor.lightlevel) lux, at \(ISO8601DateFormatter().date(from: sensor.lastupdated + "Z")?.formatted(date: .omitted, time: .standard) ?? "-")")
             } else {
                 HStack(content: {
