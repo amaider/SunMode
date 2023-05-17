@@ -34,7 +34,7 @@ struct HueV1: Codable {
         }
     }
     
-    struct Bridge11: Codable {
+    struct Bridge: Codable {
         var id: UUID = UUID()
         let name: String
         let ipAddress: String
@@ -44,7 +44,7 @@ struct HueV1: Codable {
         let name: String
         let number: Int
     }
-    var foundBridges: [Bridge11] = []
+    var foundBridges: [Bridge] = []
     var foundSensors: [Sensor] = []
     
     
@@ -354,7 +354,7 @@ struct HueV1Inputs: View {
         hueV1.foundBridges = []
         
         hueDiscovery.startDiscovery(completion: { name, ipAddress in
-            let newBridge: HueV1.Bridge11 = .init(name: name, ipAddress: ipAddress)
+            let newBridge: HueV1.Bridge = .init(name: name, ipAddress: ipAddress)
             hueV1.foundBridges.append(newBridge)
         })
     }
