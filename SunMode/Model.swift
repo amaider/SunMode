@@ -88,14 +88,16 @@ class Model: ObservableObject {
                     })
                 })
             case .hueV2:
-                self.hueV2.getSensorStatus(completion: { sensorData in
-                    DispatchQueue.main.async(execute: {
-                        self.hueV2.sensorData = sensorData
-                        
-                        if let modeAppearance: SystemAppearances = self.hueV2.currAppearance {
-                            self.systemAppearance = modeAppearance
-                            updateSystemMode(to: self.systemAppearance)
-                        }
+                DispatchQueue.global(qos: .background).async(execute: {
+                    self.hueV2.getSensorStatus(completion: { sensorData in
+                        DispatchQueue.main.async(execute: {
+                            self.hueV2.sensorData = sensorData
+                            
+                            if let modeAppearance: SystemAppearances = self.hueV2.currAppearance {
+                                self.systemAppearance = modeAppearance
+                                updateSystemMode(to: self.systemAppearance)
+                            }
+                        })
                     })
                 })
             case .staticTime:

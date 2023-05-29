@@ -50,7 +50,7 @@ struct HueV2: Codable {
         request.httpMethod = "GET"
         request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
         
-        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.main).dataTask(with: request, completionHandler: { (data, response, error) in
+        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -102,7 +102,7 @@ struct HueV2: Codable {
         request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
         request.httpBody = bodyData
         
-        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.main).dataTask(with: request, completionHandler: { (data, response, error) in
+        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
@@ -142,7 +142,7 @@ struct HueV2: Codable {
         request.httpMethod = "GET"
         request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
         
-        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.main).dataTask(with: request, completionHandler: { (data, response, error) in
+        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -342,19 +342,23 @@ struct HueV2Inputs: View {
         })
     }
     private func hueApplicationKeyCreateAction() {
-        hueV2.createHueApplicationKey(completion: { success, hueApplicationKey in
-            DispatchQueue.main.async(execute: {
-                hueV2.hueApplicationKey = hueApplicationKey
+        DispatchQueue.global().async(execute: {
+            hueV2.createHueApplicationKey(completion: { success, hueApplicationKey in
+                DispatchQueue.main.async(execute: {
+                    hueV2.hueApplicationKey = hueApplicationKey
+                })
             })
         })
     }
     private func findSensorAction() {
         hueV2.foundSensors = []
         
-        hueV2.findLightSensors(completion: { name, rid in
-            let newSensor: HueV2.Sensor = .init(name: name, rid: rid)
-            DispatchQueue.main.async(execute: {
-                hueV2.foundSensors.append(newSensor)
+        DispatchQueue.global().async(execute: {
+            hueV2.findLightSensors(completion: { name, rid in
+                let newSensor: HueV2.Sensor = .init(name: name, rid: rid)
+                DispatchQueue.main.async(execute: {
+                    hueV2.foundSensors.append(newSensor)
+                })
             })
         })
     }
