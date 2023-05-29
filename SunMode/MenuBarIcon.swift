@@ -23,6 +23,13 @@ struct MenuBarIcon: View {
                 if model.settings.menuBarIconAdvanced {
                     iconText = "\(sensorData.lightlevel)lux"
                 }
+            case .hueV2:
+                guard let sensorData: HueV2.SensorData = model.hueV2.sensorData else {
+                    return ("exclamationmark.triangle", model.mode.rawValue)
+                }
+                if model.settings.menuBarIconAdvanced {
+                    iconText = "\(sensorData.lightlevel)lux"
+                }
             case .staticTime:
                 if model.settings.menuBarIconAdvanced {
                     iconName = model.staticTime.nextChanges.1

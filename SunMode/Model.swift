@@ -14,11 +14,13 @@ class Model: ObservableObject {
     /// Modes
     @Published var coord: Coordinates = (try? PropertyListDecoder().decode(Coordinates.self, from: UserDefaults.standard.value(forKey: "coord") as? Data ?? Data())) ?? Coordinates()
     @Published var hueV1: HueV1 = (try? PropertyListDecoder().decode(HueV1.self, from: UserDefaults.standard.value(forKey: "hueV1") as? Data ?? Data())) ?? HueV1()
+    @Published var hueV2: HueV2 = (try? PropertyListDecoder().decode(HueV2.self, from: UserDefaults.standard.value(forKey: "hueV2") as? Data ?? Data())) ?? HueV2()
     @Published var staticTime: StaticTime = (try? PropertyListDecoder().decode(StaticTime.self, from: UserDefaults.standard.value(forKey: "staticTime") as? Data ?? Data())) ?? StaticTime()
     enum Modes: String, CaseIterable {
         case none = "Off"
         case coord = "Coordinates"
         case hueV1 = "Hue V1"
+        case hueV2 = "Hue V2"
         case staticTime = "Static Time"
     }
     
@@ -85,6 +87,17 @@ class Model: ObservableObject {
                         }
                     })
                 })
+            case .hueV2:
+                self.hueV2.getSensorStatus(completion: { sensorData in
+                    DispatchQueue.main.async(execute: {
+                        self.hueV2.sensorData = sensorData
+                        
+                        if let modeAppearance: SystemAppearances = self.hueV2.currAppearance {
+                            self.systemAppearance = modeAppearance
+                            updateSystemMode(to: self.systemAppearance)
+                        }
+                    })
+                })
             case .staticTime:
                 systemAppearance = staticTime.currAppearance
                 updateSystemMode(to: staticTime.currAppearance)
@@ -96,6 +109,7 @@ class Model: ObservableObject {
             case .none:         break
             case .coord:        interval = coord.nextAppearance.0
             case .hueV1:        interval = TimeInterval(hueV1.refreshInterval * 60)
+            case .hueV2:        interval = TimeInterval(hueV2.refreshInterval * 60)
             case .staticTime:   interval = staticTime.nextAppearance.0
         }
         

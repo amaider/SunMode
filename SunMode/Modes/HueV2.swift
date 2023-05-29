@@ -4,19 +4,15 @@
 import SwiftUI
 import Foundation
 
-struct HueV1: Codable {
+struct HueV2: Codable {
     struct SensorData: Codable {
         let lightlevel: Int
-        let dark: Bool
-        let daylight: Bool
-        let lastupdated: String
-        let tholddark: Int
+        let changed: String
     }
     var ipAddress: String = ""
-    var apiKey: String = ""
-    var sensorNumber: Int = 0
+    var hueApplicationKey: String = ""
+    var rid: String = ""
     
-    var useBridgeThreshold: Bool = true
     var customThreshold: Int = 4500
     
     var refreshInterval: Int = 5
@@ -26,12 +22,7 @@ struct HueV1: Codable {
     
     var currAppearance: SystemAppearances? {
         guard let currSensor = self.sensorData else { return nil }
-        
-        if useBridgeThreshold {
-            return currSensor.dark ? .dark : .light
-        } else {
-            return currSensor.lightlevel < customThreshold ? .dark : .light
-        }
+        return currSensor.lightlevel < customThreshold ? .dark : .light
     }
     
     struct Bridge: Codable {
@@ -42,41 +33,38 @@ struct HueV1: Codable {
     struct Sensor: Codable {
         var id: UUID = UUID()
         let name: String
-        let number: Int
+        let rid: String
     }
     var foundBridges: [Bridge] = []
     var foundSensors: [Sensor] = []
     
     
-    
     // MARK: Functions
     func getSensorStatus(completion: @escaping (SensorData) -> Void) {
-        guard let url = URL(string: "http://\(ipAddress)/api/\(apiKey)/sensors/\(sensorNumber)") else {
-            print("fuck url sensor")
+        guard let url = URL(string: "https://\(ipAddress)/clip/v2/resource/light_level/\(rid)") else {
+            print("fuck url sensor, no ipAddress or rid")
             return
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
         
-        URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.main).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
                     // NSLog("-------- json: --------")
                     // NSLog(String(describing: json))
                     
-                    /// parse values
-                    if let state = json?["state"] as? [String: Any],
-                       let lightlevel: Int = state["lightlevel"] as? Int,
-                       let dark: Bool = state["dark"] as? Bool,
-                       let daylight: Bool = state["daylight"] as? Bool,
-                       let lastupdated: String = state["lastupdated"] as? String,
-                       let config = json?["config"] as? [String: Any],
-                       let tholddark: Int = config["tholddark"] as? Int {
-                        
+                    /// parse response
+                    if let data: [[String: Any]] = json?["data"] as? [[String: Any]],
+                       let light: [String: Any] = data.first?["light"] as? [String : Any],
+                       let lightLevelReport: [String: Any] = light["light_level_report"] as? [String: Any],
+                       let lightLevel: Int = lightLevelReport["light_level"] as? Int,
+                       let changed: String = lightLevelReport["changed"] as? String {
                         /// all values were found
-                        let result: SensorData = SensorData(lightlevel: lightlevel, dark: dark, daylight: daylight, lastupdated: lastupdated, tholddark: tholddark)
+                        let result: SensorData = .init(lightlevel: lightLevel, changed: changed)
                         completion(result)
                     }
                 } catch {
@@ -99,78 +87,84 @@ struct HueV1: Codable {
         }).resume()
     }
     
-    
     /// completion: (success, API Key)
-    func createAPIKey(completion: @escaping (Bool, String) -> Void) {
-        guard let url: URL = URL(string: "\(self.ipAddress)/api") else {
-            completion(false, "no IP Address")
+    func createHueApplicationKey(completion: @escaping (Bool, String) -> Void) {
+        guard let url: URL = URL(string: "https://\(self.ipAddress)/api") else {
+            print("bad URL2")
             return
         }
         
-        let bodyString = "{\"devicetype\":\"SunMode#MacOS\"}"
-        guard let bodyData = bodyString.data(using: .utf8) else { return }
+        let bodyString: String = "{\"devicetype\":\"SunMode#macOS\", \"generateclientkey\":true}"
+        guard let bodyData: Data = bodyString.data(using: .utf8) else { return }
         
-        var request: URLRequest = URLRequest(url: url)
+        var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
         request.httpBody = bodyData
         
-        URLSession.shared.dataTask(with: request, completionHandler: { data, response, error in
+        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.main).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
-                    let json2 = try JSONSerialization.jsonObject(with: data) as? [Any]
-                    let json = json2?.first as? [String: Any]
-                    // NSLog("-------- json: --------")
-                    // NSLog(String(describing: json))
+                    let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
                     
-                    /// parse values
-                    if let error = json?["error"] as? [String: Any],
+                    /// parse response
+                    if let error: [String: Any] = json?.first?["error"] as? [String: Any],
                        let errorDescription: String = error["description"] as? String {
+                        /// error
                         completion(false, errorDescription)
-                    } else if let success = json?["success"] as? [String: Any],
-                              let apiKey: String = success["username"] as? String {
-                        completion(true, apiKey)
+                    } else if let success: [String: Any] = json?.first?["success"] as? [String: Any],
+                              let hueApplicationKey: String = success["username"] as? String {
+                        /// success
+                        completion(true, hueApplicationKey)
                     } else {
+                        /// should never happen
                         completion(false, "unknown error")
                     }
                 } catch {
-                    NSLog("-------- json error: --------")
-                    NSLog(String(describing: error))
+                    NSLog("--json error:--")
+                    NSLog(error.localizedDescription)
                 }
             } else {
-                /// urlsession error
-                NSLog("-------- error: --------")
-                NSLog(error?.localizedDescription ?? "no error received")
-                NSLog("-------- response: --------")
-                NSLog(String(describing: response))
-                NSLog("-------- data: --------")
-                NSLog(String(decoding: data ?? Data(), as: UTF8.self))
-                completion(false, "")
+                NSLog("--error:--")
+                NSLog(error?.localizedDescription ?? "no error description")
             }
         }).resume()
     }
     
     /// completion: (Name, Sensor Number)
-    func findLightSensors(completion: @escaping (String, Int) -> Void) {
-        guard let url = URL(string: "http://\(ipAddress)/api/\(apiKey)/sensors/") else {
-            print("fuck this url2, no ipAddress or apiKey")
+    func findLightSensors(completion: @escaping (String, String) -> Void) {
+        guard let url = URL(string: "https://\(ipAddress)/clip/v2/resource/device") else {
+            print("fuck this url2, no ipAddress or hueApplicationKey")
             return
         }
         
-        URLSession.shared.dataTask(with: url, completionHandler: { data, response, error in
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
+        
+        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.main).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
                     // NSLog("-------- json: --------")
                     // NSLog(String(describing: json))
                     
-                    for (key, _) in json ?? [:] {
-                        if let sensor = json?[key] as? [String: Any],
-                           let name: String = sensor["name"] as? String,
-                           let type: String = sensor["type"] as? String,
-                           type == "ZLLLightLevel" {
-                            guard let sensorNumber: Int = Int(key) else { return }
-                            /// got name and sensor number
-                            completion(name, sensorNumber)
+                    if let data: [[String: Any]] = json?["data"] as? [[String: Any]] {
+                        /// search through all devices
+                        for device in data {
+                            if let services: [[String: String]] = device["services"] as? [[String: String]] {
+                                /// search through all services
+                                for service in services {
+                                    if let rid: String = service["rid"],
+                                       let rtype: String = service["rtype"],
+                                       rtype == "light_level",
+                                       /// got rtype and rid, now get name
+                                       let metadata: [String: String] = device["metadata"] as? [String: String],
+                                       let name: String = metadata["name"] {
+                                        completion(name, rid)
+                                    }
+                                }
+                            }
                         }
                     }
                 } catch {
@@ -190,60 +184,59 @@ struct HueV1: Codable {
     }
 }
 
-// MARK: HueV1 Inputs
-struct HueV1Inputs: View {
-    @Binding var hueV1: HueV1
+// MARK: HueV2 Inputs
+struct HueV2Inputs: View {
+    @Binding var hueV2: HueV2
     
     var hueDiscovery: HueBridgeDiscovery = HueBridgeDiscovery()
     
     var body: some View {
         LabeledContent("Refresh Interval (min)", content: {
-            TextField("Refresh Interval (min)", value: $hueV1.refreshInterval, format: .number)
+            TextField("Refresh Interval (min)", value: $hueV2.refreshInterval, format: .number)
                 .textFieldStyle(.custom)
         })
         
         Divider()
-            .onChange(of: hueV1.ipAddress, perform: saveChange)
-            .onChange(of: hueV1.apiKey, perform: saveChange)
-            .onChange(of: hueV1.sensorNumber, perform: saveChange)
-            .onChange(of: hueV1.useBridgeThreshold, perform: saveChange)
-            .onChange(of: hueV1.customThreshold, perform: saveChange)
-            .onChange(of: hueV1.refreshInterval, perform: saveChange)
+            .onChange(of: hueV2.ipAddress, perform: saveChange)
+            .onChange(of: hueV2.hueApplicationKey, perform: saveChange)
+            .onChange(of: hueV2.rid, perform: saveChange)
+            .onChange(of: hueV2.customThreshold, perform: saveChange)
+            .onChange(of: hueV2.refreshInterval, perform: saveChange)
         
         LabeledContent(content: {
-            TextField("Bridge IP", text: $hueV1.ipAddress, prompt: Text("192.168.x.x"))
+            TextField("Bridge IP", text: $hueV2.ipAddress, prompt: Text("192.168.x.x"))
                 .textFieldStyle(.custom)
         }, label: {
             HStack(content: {
                 Text("Bridge IP")
                 
-                Button(action: findBridgeAction, label: {
+                Button(action: bridgeSearchAction, label: {
                     Image(systemName: "magnifyingglass")
                 })
                 .buttonStyle(.plain)
                 .help("Search for Philips Hue Bridges")
-                .sheet(isPresented: .constant(!hueV1.foundBridges.isEmpty), content: { bridgeSheet })
+                .sheet(isPresented: .constant(!hueV2.foundBridges.isEmpty), content: { bridgeSheet })
             })
         })
         
         LabeledContent(content: {
-            TextField("API Key", text: $hueV1.apiKey)
+            TextField("API Key", text: $hueV2.hueApplicationKey)
                 .textFieldStyle(.custom)
         }, label: {
             HStack(content: {
                 Text("API Key")
                 
-                Button(action: createAPIKeyAction, label: {
+                Button(action: hueApplicationKeyCreateAction, label: {
                     Image(systemName: "plus")
                 })
                 .buttonStyle(.plain)
-                .disabled(!hueV1.apiKey.isEmpty)
-                .help(hueV1.ipAddress.isEmpty ? "Missing IP Address" : !hueV1.apiKey.isEmpty ? "Delete current API Key to create a new Key" : "Create New API Key")
+                .disabled(!hueV2.hueApplicationKey.isEmpty)
+                .help(hueV2.ipAddress.isEmpty ? "Missing IP Address" : !hueV2.hueApplicationKey.isEmpty ? "Delete current API Key to create a new Key" : "Create New API Key")
             })
         })
         
         LabeledContent(content: {
-            TextField("Sensor number", value: $hueV1.sensorNumber, format: .number)
+            TextField("Sensor number", text: $hueV2.rid)
                 .textFieldStyle(.custom)
         }, label: {
             HStack(content: {
@@ -253,32 +246,18 @@ struct HueV1Inputs: View {
                     Image(systemName: "magnifyingglass")
                 })
                 .buttonStyle(.plain)
-                .help(hueV1.ipAddress.isEmpty ? "Missing IP Address" : hueV1.apiKey.isEmpty ? "Missing API Key" : "Search for Sensors")
-                .disabled(hueV1.ipAddress.isEmpty || hueV1.apiKey.isEmpty)
-                .sheet(isPresented: .constant(!hueV1.foundSensors.isEmpty), content: { sensorSheet })
+                .help(hueV2.ipAddress.isEmpty ? "Missing IP Address" : hueV2.hueApplicationKey.isEmpty ? "Missing API Key" : "Search for Sensors")
+                .disabled(hueV2.ipAddress.isEmpty || hueV2.hueApplicationKey.isEmpty)
+                .sheet(isPresented: .constant(!hueV2.foundSensors.isEmpty), content: { sensorSheet })
             })
         })
         
         Divider()
         
-        Picker("Threshold", selection: $hueV1.useBridgeThreshold, content: {
-            Text("Hue Bridge").tag(true)
-            Text("Custom").tag(false)
+        LabeledContent("Threshold Value", content: {
+            TextField("Threshold Value", value: $hueV2.customThreshold, format: .number)
+                .textFieldStyle(.custom)
         })
-        .pickerStyle(.segmented)
-        
-        if !hueV1.useBridgeThreshold {
-            LabeledContent("Threshold Value", content: {
-                TextField("Threshold Value", value: $hueV1.customThreshold, format: .number)
-                    .textFieldStyle(.custom)
-            })
-        } else {
-            LabeledContent("Threshold Value", content: {
-                TextField("Threshold Value", value: .constant(hueV1.sensorData?.tholddark ?? 0), format: .number)
-                    .disabled(true)
-                    .textFieldStyle(.custom)
-            })
-        }
     }
     
     
@@ -289,15 +268,15 @@ struct HueV1Inputs: View {
                 HueBridgeIcon(size: 50, version: 0)
                     .shadow(radius: 10)
                 
-                Text(hueV1.foundBridges.isEmpty ? "Searching..." : "Select Bridge")
+                Text(hueV2.foundBridges.isEmpty ? "Searching..." : "Select Bridge")
                     .font(.headline)
             })
             
-            ForEach(hueV1.foundBridges, id: \.id, content: { bridge in
+            ForEach(hueV2.foundBridges, id: \.id, content: { bridge in
                 Button(action: {
-                    hueV1.ipAddress = bridge.ipAddress
+                    hueV2.ipAddress = bridge.ipAddress
                     
-                    hueV1.foundBridges = []
+                    hueV2.foundBridges = []
                 }, label: {
                     Text("\(bridge.name) - \(bridge.ipAddress)")
                         .frame(minWidth: 0, maxWidth: .infinity)
@@ -307,7 +286,7 @@ struct HueV1Inputs: View {
             Divider()
             
             Button(action: {
-                hueV1.foundBridges = []
+                hueV2.foundBridges = []
             }, label: {
                 Text("Done")
                     .frame(minWidth: 0, maxWidth: .infinity)
@@ -324,17 +303,17 @@ struct HueV1Inputs: View {
                 HueSensorIcon(size: 50)
                     .shadow(radius: 10)
                 
-                Text(hueV1.foundSensors.isEmpty ? "Searching..." : "Select Sensor")
+                Text(hueV2.foundSensors.isEmpty ? "Searching..." : "Select Sensor")
                     .font(.headline)
             })
             
-            ForEach(hueV1.foundSensors, id: \.id, content: { sensor in
+            ForEach(hueV2.foundSensors, id: \.id, content: { sensor in
                 Button(action: {
-                    hueV1.sensorNumber = sensor.number
+                    hueV2.rid = sensor.rid
                     
-                    hueV1.foundSensors = []
+                    hueV2.foundSensors = []
                 }, label: {
-                    Text("\(sensor.name) - \(sensor.number)")
+                    Text("\(sensor.name) - \(sensor.rid)")
                         .frame(minWidth: 0, maxWidth: .infinity)
                 })
             })
@@ -342,7 +321,7 @@ struct HueV1Inputs: View {
             Divider()
             
             Button(action: {
-                hueV1.foundSensors = []
+                hueV2.foundSensors = []
             }, label: {
                 Text("Done")
                     .frame(minWidth: 0, maxWidth: .infinity)
@@ -354,44 +333,50 @@ struct HueV1Inputs: View {
     }
     
     // MARK: Functions
-    private func findBridgeAction() {
-        hueV1.foundBridges = []
+    private func bridgeSearchAction() {
+        hueV2.foundBridges = []
         
         hueDiscovery.startDiscovery(completion: { name, ipAddress in
-            let newBridge: HueV1.Bridge = .init(name: name, ipAddress: ipAddress)
-            hueV1.foundBridges.append(newBridge)
+            let newBridge: HueV2.Bridge = .init(name: name, ipAddress: ipAddress)
+            hueV2.foundBridges.append(newBridge)
         })
     }
-    private func createAPIKeyAction() {
-        hueV1.createAPIKey(completion: { success, apiKey in
+    private func hueApplicationKeyCreateAction() {
+        hueV2.createHueApplicationKey(completion: { success, hueApplicationKey in
             DispatchQueue.main.async(execute: {
-                hueV1.apiKey = apiKey
+                hueV2.hueApplicationKey = hueApplicationKey
             })
         })
     }
     private func findSensorAction() {
-        hueV1.foundSensors = []
+        hueV2.foundSensors = []
         
-        hueV1.findLightSensors(completion: { name, sensorNumber in
-            let newSensor: HueV1.Sensor = .init(name: name, number: sensorNumber)
+        hueV2.findLightSensors(completion: { name, rid in
+            let newSensor: HueV2.Sensor = .init(name: name, rid: rid)
             DispatchQueue.main.async(execute: {
-                hueV1.foundSensors.append(newSensor)
+                hueV2.foundSensors.append(newSensor)
             })
         })
     }
     private func saveChange(_ any: any Equatable) {
-        hueV1.restartMode.toggle()
-        UserDefaults.standard.set(try? PropertyListEncoder().encode(hueV1), forKey: "hueV1")
+        hueV2.restartMode.toggle()
+        UserDefaults.standard.set(try? PropertyListEncoder().encode(hueV2), forKey: "hueV2")
     }
 }
 
-// MARK: HueV1 Info
-struct HueV1Info: View {
+// MARK: HueV2 Info
+struct HueV2Info: View {
     let refreshTimer: Timer?
-    let sensorData: HueV1.SensorData?
+    let sensorData: HueV2.SensorData?
     
     @State private var updateViewTimer: Timer?
     @State private var now: Date = Date.now
+    
+    static let dateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
     
     var body: some View {
         HStack(content: {
@@ -409,8 +394,8 @@ struct HueV1Info: View {
             }
             
             
-            if let sensor: HueV1.SensorData = sensorData {
-                Text("\(sensor.lightlevel) lux, at \(ISO8601DateFormatter().date(from: sensor.lastupdated + "Z")?.formatted(date: .omitted, time: .standard) ?? "-")")
+            if let sensor: HueV2.SensorData = sensorData {
+                Text("\(sensor.lightlevel) lux, at \(HueV2Info.dateFormatter.date(from: sensor.changed)?.formatted(date: .omitted, time: .standard) ?? "-")")
             } else {
                 HStack(content: {
                     Image(systemName: "exclamationmark.triangle")

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F90E3BBB2A1C0054000E99A4 /* HueV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90E3BBA2A1C0054000E99A4 /* HueV3.swift */; };
+		F90E3BBD2A1C04CF000E99A4 /* StaticTimeClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90E3BBC2A1C04CF000E99A4 /* StaticTimeClass.swift */; };
 		F91A9D6E29F5CDF300C59350 /* SystemFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */; };
 		F966426129EC71470022FDC3 /* SunModeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426029EC71470022FDC3 /* SunModeApp.swift */; };
 		F966426329EC71470022FDC3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426229EC71470022FDC3 /* ContentView.swift */; };
@@ -21,9 +23,14 @@
 		F966428229EC779D0022FDC3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966428129EC779D0022FDC3 /* LocationManager.swift */; };
 		F966428429EC7A580022FDC3 /* Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966428329EC7A580022FDC3 /* Coordinates.swift */; };
 		F968434029F1A747001A3EE5 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F968433F29F1A747001A3EE5 /* Settings.swift */; };
+		F97126292A065FAB00DBCC5B /* HueBridgeDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = F97126282A065FAB00DBCC5B /* HueBridgeDiscovery.swift */; };
+		F971CA232A16B57D00B19045 /* HueV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = F971CA222A16B57D00B19045 /* HueV2.swift */; };
+		F9AF3C3D2A2503EB005C9217 /* HueV2Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AF3C3C2A2503EB005C9217 /* HueV2Helper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F90E3BBA2A1C0054000E99A4 /* HueV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueV3.swift; sourceTree = "<group>"; };
+		F90E3BBC2A1C04CF000E99A4 /* StaticTimeClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticTimeClass.swift; sourceTree = "<group>"; };
 		F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemFunctions.swift; sourceTree = "<group>"; };
 		F966425D29EC71470022FDC3 /* SunMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SunMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F966426029EC71470022FDC3 /* SunModeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunModeApp.swift; sourceTree = "<group>"; };
@@ -39,6 +46,9 @@
 		F966428129EC779D0022FDC3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		F966428329EC7A580022FDC3 /* Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinates.swift; sourceTree = "<group>"; };
 		F968433F29F1A747001A3EE5 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		F97126282A065FAB00DBCC5B /* HueBridgeDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueBridgeDiscovery.swift; sourceTree = "<group>"; };
+		F971CA222A16B57D00B19045 /* HueV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueV2.swift; sourceTree = "<group>"; };
+		F9AF3C3C2A2503EB005C9217 /* HueV2Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueV2Helper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,11 +82,11 @@
 		F966425F29EC71470022FDC3 /* SunMode */ = {
 			isa = PBXGroup;
 			children = (
+				F966427129EC722C0022FDC3 /* Model.swift */,
 				F966426029EC71470022FDC3 /* SunModeApp.swift */,
 				F966426229EC71470022FDC3 /* ContentView.swift */,
 				F966426F29EC71E90022FDC3 /* MenuBarIcon.swift */,
 				F966427329EC72680022FDC3 /* Modes */,
-				F966427129EC722C0022FDC3 /* Model.swift */,
 				F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */,
 				F966427629EC72A20022FDC3 /* Extensions.swift */,
 				F966426429EC714B0022FDC3 /* Assets.xcassets */,
@@ -100,7 +110,12 @@
 				F966428129EC779D0022FDC3 /* LocationManager.swift */,
 				F966428329EC7A580022FDC3 /* Coordinates.swift */,
 				F966427A29EC73760022FDC3 /* HueV1.swift */,
+				F971CA222A16B57D00B19045 /* HueV2.swift */,
+				F9AF3C3C2A2503EB005C9217 /* HueV2Helper.swift */,
+				F90E3BBA2A1C0054000E99A4 /* HueV3.swift */,
+				F97126282A065FAB00DBCC5B /* HueBridgeDiscovery.swift */,
 				F966427C29EC737F0022FDC3 /* StaticTime.swift */,
+				F90E3BBC2A1C04CF000E99A4 /* StaticTimeClass.swift */,
 				F968433F29F1A747001A3EE5 /* Settings.swift */,
 			);
 			path = Modes;
@@ -182,9 +197,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F90E3BBB2A1C0054000E99A4 /* HueV3.swift in Sources */,
 				F966426329EC71470022FDC3 /* ContentView.swift in Sources */,
+				F971CA232A16B57D00B19045 /* HueV2.swift in Sources */,
 				F966427029EC71E90022FDC3 /* MenuBarIcon.swift in Sources */,
 				F91A9D6E29F5CDF300C59350 /* SystemFunctions.swift in Sources */,
+				F97126292A065FAB00DBCC5B /* HueBridgeDiscovery.swift in Sources */,
+				F9AF3C3D2A2503EB005C9217 /* HueV2Helper.swift in Sources */,
 				F966428429EC7A580022FDC3 /* Coordinates.swift in Sources */,
 				F966427729EC72A20022FDC3 /* Extensions.swift in Sources */,
 				F968434029F1A747001A3EE5 /* Settings.swift in Sources */,
@@ -192,6 +211,7 @@
 				F966427229EC722C0022FDC3 /* Model.swift in Sources */,
 				F966428229EC779D0022FDC3 /* LocationManager.swift in Sources */,
 				F966427B29EC73760022FDC3 /* HueV1.swift in Sources */,
+				F90E3BBD2A1C04CF000E99A4 /* StaticTimeClass.swift in Sources */,
 				F966427D29EC737F0022FDC3 /* StaticTime.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

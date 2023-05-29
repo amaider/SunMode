@@ -53,6 +53,7 @@ struct ContentView: View {
                     case .none:         EmptyView()
                     case .coord:        CoordinatesInputs(coord: $model.coord)
                     case .hueV1:        HueV1Inputs(hueV1: $model.hueV1)
+                    case .hueV2:        HueV2Inputs(hueV2: $model.hueV2)
                     case .staticTime:   StaticTimeInputs(staticTime: $model.staticTime)
                 }
             }
@@ -72,6 +73,12 @@ struct ContentView: View {
                             })
                             .buttonStyle(.plain)
                             .help(model.hueV1.sensorData == nil ? "-" : "lightlevel: \(model.hueV1.sensorData!.lightlevel)\ndark: \(model.hueV1.sensorData!.dark ? "true":"false")\ndaylight: \(model.hueV1.sensorData!.daylight ? "true":"false")\nlastupdated: \(model.hueV1.sensorData!.lastupdated)\ntholddark: \(model.hueV1.sensorData!.tholddark)")
+                        case .hueV2:
+                            Button(action: model.startMode, label: {
+                                HueV2Info(refreshTimer: model.refreshTimer, sensorData: model.hueV2.sensorData)
+                            })
+                            .buttonStyle(.plain)
+                            .help(model.hueV2.sensorData == nil ? "-" : "lightlevel: \(model.hueV2.sensorData!.lightlevel)\nchanged: \(model.hueV2.sensorData!.changed)")
                         case .staticTime:
                             StaticTimeInfo(nextChanges: model.staticTime.nextChanges)
                         default:

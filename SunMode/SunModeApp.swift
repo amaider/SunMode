@@ -27,6 +27,7 @@ struct SunModeApp: App {
                 .onChange(of: model.mode, perform: { _ in model.startMode() })
                 .onChange(of: model.coord.restartMode, perform: { _ in model.startMode() })
                 .onChange(of: model.hueV1.restartMode, perform: { _ in model.startMode() })
+                .onChange(of: model.hueV2.restartMode, perform: { _ in model.startMode() })
                 .onChange(of: model.staticTime.restartMode, perform: { _ in model.startMode() })
         })
         .menuBarExtraStyle(.window)
