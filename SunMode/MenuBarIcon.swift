@@ -21,14 +21,16 @@ struct MenuBarIcon: View {
                     return ("exclamationmark.triangle", model.mode.rawValue)
                 }
                 if model.settings.menuBarIconAdvanced {
-                    iconText = "\(sensorData.lightlevel)lux"
+                    iconName = ""
+                    iconText = "\(sensorData.lightlevel / 1000) lux"
                 }
             case .hueV2:
                 guard let sensorData: HueV2.SensorData = model.hueV2.sensorData else {
                     return ("exclamationmark.triangle", model.mode.rawValue)
                 }
                 if model.settings.menuBarIconAdvanced {
-                    iconText = "\(sensorData.lightlevel)lux"
+                    iconName = ""
+                    iconText = "\(sensorData.lightlevel / 1000) lux"
                 }
             case .staticTime:
                 if model.settings.menuBarIconAdvanced {
@@ -44,7 +46,9 @@ struct MenuBarIcon: View {
     // MARK: Icon
     var body: some View {
         HStack(content: {
-            Image(systemName: iconTuple.0)
+            if !iconTuple.0.isEmpty {
+                Image(systemName: iconTuple.0)
+            }
             
             if !iconTuple.1.isEmpty {
                 Text(iconTuple.1)

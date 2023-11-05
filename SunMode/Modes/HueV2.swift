@@ -399,7 +399,7 @@ struct HueV2Info: View {
             
             
             if let sensor: HueV2.SensorData = sensorData {
-                Text("\(sensor.lightlevel) lux, at \(HueV2Info.dateFormatter.date(from: sensor.changed)?.formatted(date: .omitted, time: .standard) ?? "-")")
+                Text("\(sensor.lightlevel / 1000) lux, at \(HueV2Info.dateFormatter.date(from: sensor.changed)?.formatted(date: .omitted, time: .standard) ?? "-")")
             } else {
                 HStack(content: {
                     Image(systemName: "exclamationmark.triangle")
