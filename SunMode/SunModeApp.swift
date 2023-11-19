@@ -15,6 +15,7 @@ struct SunModeApp: App {
                 .background(Blur())
         }, label: {
             MenuBarIcon(model: model)
+                .labelStyle(.titleAndIcon)
                 .onAppear(perform: {
                     model.systemAppearance = getSystemAppearance()
                     model.startMode()
@@ -33,4 +34,3 @@ struct SunModeApp: App {
         .menuBarExtraStyle(.window)
     }
 }
-

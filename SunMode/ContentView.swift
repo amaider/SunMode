@@ -45,8 +45,7 @@ struct ContentView: View {
             
             if showSettings {
                 // MARK: Settings
-                SettingsInputs(settings: $model.settings)
-                
+                SettingsInputs()
             } else {
                 // MARK: Inputs
                 switch model.mode {
@@ -64,29 +63,28 @@ struct ContentView: View {
                 
                 // MARK: Info
                 Group(content: {
-                    switch model.mode {
-                        case .coord:
-                            CoordinatesInfo(nextChanges: model.coord.nextChanges)
-                        case .hueV1:
-                            Button(action: model.startMode, label: {
-                                HueV1Info(refreshTimer: model.refreshTimer, sensorData: model.hueV1.sensorData)
-                            })
-                            .buttonStyle(.plain)
-                            .help(model.hueV1.sensorData == nil ? "-" : "lightlevel: \(model.hueV1.sensorData!.lightlevel)\ndark: \(model.hueV1.sensorData!.dark ? "true":"false")\ndaylight: \(model.hueV1.sensorData!.daylight ? "true":"false")\nlastupdated: \(model.hueV1.sensorData!.lastupdated)\ntholddark: \(model.hueV1.sensorData!.tholddark)")
-                        case .hueV2:
-                            Button(action: model.startMode, label: {
-                                HueV2Info(refreshTimer: model.refreshTimer, sensorData: model.hueV2.sensorData)
-                            })
-                            .buttonStyle(.plain)
-                            .help(model.hueV2.sensorData == nil ? "-" : "lightlevel: \(model.hueV2.sensorData!.lightlevel)\nchanged: \(model.hueV2.sensorData!.changed)")
-                        case .staticTime:
-                            StaticTimeInfo(nextChanges: model.staticTime.nextChanges)
-                        default:
-                            Text("-")
+                    if showSettings {
+                        SettingsInfo()
+                    } else {
+                        switch model.mode {
+                            case .coord:    
+                                CoordinatesInfo(nextChanges: model.coord.nextChanges)
+                            case .hueV1:
+                                Button(action: model.startMode, label: { HueV1Info(refreshTimer: model.refreshTimer, sensorData: model.hueV1.sensorData) })
+                                    .help(model.hueV1.sensorData == nil ? "-" : "lightlevel: \(model.hueV1.sensorData!.lightlevel)\ndark: \(model.hueV1.sensorData!.dark ? "true":"false")\ndaylight: \(model.hueV1.sensorData!.daylight ? "true":"false")\nlastupdated: \(model.hueV1.sensorData!.lastupdated)\ntholddark: \(model.hueV1.sensorData!.tholddark)")
+                            case .hueV2:
+                                Button(action: model.startMode, label: { HueV2Info(refreshTimer: model.refreshTimer, sensorData: model.hueV2.sensorData) })
+                                    .help(model.hueV2.sensorData == nil ? "-" : "lightlevel: \(model.hueV2.sensorData!.lightlevel)\nchanged: \(model.hueV2.sensorData!.changed)")
+                            case .staticTime:
+                                StaticTimeInfo(nextChanges: model.staticTime.nextChanges)
+                            default:
+                                Text("-")
+                        }
                     }
                 })
                 .foregroundColor(.gray)
                 .font(.subheadline)
+                .buttonStyle(.bordered)
                 
                 Spacer()
                 

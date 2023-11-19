@@ -5,55 +5,33 @@ import SwiftUI
 
 struct MenuBarIcon: View {
     @ObservedObject var model: Model
+    @AppStorage("menuBarIconAdvanced") var menuBarIconAdvanced: Bool = true
     
-    var iconTuple: (String, String) {
-        var iconName: String = model.systemAppearance == .dark ? "lightswitch.off" : "lightswitch.on"
-        var iconText: String = ""
-        
-        switch model.mode {
-            case .coord:
-                if model.settings.menuBarIconAdvanced {
-                    iconName = model.coord.nextChanges.1
-                    iconText = model.coord.nextChanges.0.formatted(date: .omitted, time: .shortened)
-                }
-            case .hueV1:
-                guard let sensorData: HueV1.SensorData = model.hueV1.sensorData else {
-                    return ("exclamationmark.triangle", model.mode.rawValue)
-                }
-                if model.settings.menuBarIconAdvanced {
-                    iconName = ""
-                    iconText = "\(sensorData.lightlevel / 1000) lux"
-                }
-            case .hueV2:
-                guard let sensorData: HueV2.SensorData = model.hueV2.sensorData else {
-                    return ("exclamationmark.triangle", model.mode.rawValue)
-                }
-                if model.settings.menuBarIconAdvanced {
-                    iconName = ""
-                    iconText = "\(sensorData.lightlevel / 1000) lux"
-                }
-            case .staticTime:
-                if model.settings.menuBarIconAdvanced {
-                    iconName = model.staticTime.nextChanges.1
-                    iconText = model.staticTime.nextChanges.0.formatted(date: .omitted, time: .shortened)
-                }
-            default: break
-        }
-        
-        return (iconName, iconText)
-    }
-    
-    // MARK: Icon
     var body: some View {
-        HStack(content: {
-            if !iconTuple.0.isEmpty {
-                Image(systemName: iconTuple.0)
+        if menuBarIconAdvanced {
+            switch model.mode {
+                case .coord:
+                    Label(model.coord.nextChanges.0.formatted(date: .omitted, time: .shortened), systemImage: model.coord.nextChanges.1)
+                case .hueV1:
+                    if let sensorData: HueV1.SensorData = model.hueV1.sensorData {
+                        Text("\(sensorData.lightlevel / 1000) lux")
+                    } else {
+                        Label(model.mode.rawValue, systemImage: "exclamationmark.triangle")
+                    }
+                case .hueV2:
+                    if let sensorData: HueV2.SensorData = model.hueV2.sensorData {
+                        Text("\(sensorData.lightlevel / 1000) lux")
+                    } else {
+                        Label(model.mode.rawValue, systemImage: "exclamationmark.triangle")
+                    }
+                case .staticTime:
+                    Label(model.staticTime.nextChanges.0.formatted(date: .omitted, time: .shortened), systemImage: model.staticTime.nextChanges.1)
+                default:
+                    Image(systemName: model.systemAppearance == .dark ? "lightswitch.off" : "lightswitch.on")
             }
-            
-            if !iconTuple.1.isEmpty {
-                Text(iconTuple.1)
-            }
-        })
+        } else {
+            Image(systemName: model.systemAppearance == .dark ? "lightswitch.off" : "lightswitch.on")
+        }
     }
 }
 

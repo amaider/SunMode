@@ -32,6 +32,7 @@
 		F90E3BBA2A1C0054000E99A4 /* HueV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueV3.swift; sourceTree = "<group>"; };
 		F90E3BBC2A1C04CF000E99A4 /* StaticTimeClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticTimeClass.swift; sourceTree = "<group>"; };
 		F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemFunctions.swift; sourceTree = "<group>"; };
+		F9421E4E2AF8470100935446 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F966425D29EC71470022FDC3 /* SunMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SunMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F966426029EC71470022FDC3 /* SunModeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunModeApp.swift; sourceTree = "<group>"; };
 		F966426229EC71470022FDC3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -66,6 +67,7 @@
 		F966425429EC71470022FDC3 = {
 			isa = PBXGroup;
 			children = (
+				F9421E4E2AF8470100935446 /* README.md */,
 				F966425F29EC71470022FDC3 /* SunMode */,
 				F966425E29EC71470022FDC3 /* Products */,
 			);
@@ -351,7 +353,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = de.amaider.SunMode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -378,7 +380,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = de.amaider.SunMode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

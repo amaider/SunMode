@@ -84,11 +84,10 @@ struct StaticTimeInfo: View {
     
     var body: some View {
         HStack(content: {
-            Image(systemName: nextChanges.1)
-            Text(nextChanges.0.formatted(date: .omitted, time: .shortened))
+            Label(nextChanges.0.formatted(date: .omitted, time: .shortened), systemImage: nextChanges.1)
             Text("|")
-            Image(systemName: nextChanges.3)
-            Text(nextChanges.2.formatted(date: .omitted, time: .shortened))
+            Label(nextChanges.2.formatted(date: .omitted, time: .shortened), systemImage: nextChanges.3)
         })
+        .foregroundStyle(.primary, .yellow)
     }
 }

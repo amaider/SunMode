@@ -4,54 +4,48 @@
 import SwiftUI
 import ServiceManagement
 
-struct Settings: Codable {
-    var menuBarIconAdvanced: Bool = true
-    
-    // var restartMode: Bool = false    /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
-}
-
 // MARK: Settings Inputs
 struct SettingsInputs: View {
-    @Binding var settings: Settings
+    @AppStorage("menuBarIconAdvanced") var menuBarIconAdvanced: Bool = true
+    // @AppStorage("restartMode") var restartMode: Bool = false    /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
+    
+    @State var newVersion: String = ""
     
     var body: some View {
-        Toggle(isOn: $settings.menuBarIconAdvanced, label: { Text("Detailed MenuBar Icon") })
-            .toggleStyle(.switch)
-            .scaleEffect(0.75)
-            .padding(.trailing, -10)
-            .help("MenuBarIcon: show next Sunset/Sunrise or current lightlevel")
-            .onChange(of: settings.menuBarIconAdvanced, perform: saveChange)
-        
-        
-        let launchItemBinding: Binding<Bool> = Binding(
-            get: { SMAppService.mainApp.status == .enabled },
-            set: {
-                /// add or remove LoginItem
-                if $0 {
-                    do {
-                        try SMAppService.mainApp.register()
-                    } catch {
-                        NSLog("add LoginItem Error: \(error)")
-                    }
-                } else {
-                    do {
-                        try SMAppService.mainApp.unregister()
-                    } catch {
-                        NSLog("remove LoginItem Error: \(error)")
+        VStack(content: {
+            Toggle(isOn: $menuBarIconAdvanced, label: { Text("Detailed MenuBar Icon") })
+                .toggleStyle(.switch)
+                .help("MenuBarIcon: show next Sunset/Sunrise or current lightlevel")
+            
+            
+            let launchItemBinding: Binding<Bool> = Binding(
+                get: { SMAppService.mainApp.status == .enabled },
+                set: {
+                    /// add or remove LoginItem
+                    if $0 {
+                        do {
+                            try SMAppService.mainApp.register()
+                        } catch {
+                            NSLog("add LoginItem Error: \(error)")
+                        }
+                    } else {
+                        do {
+                            try SMAppService.mainApp.unregister()
+                        } catch {
+                            NSLog("remove LoginItem Error: \(error)")
+                        }
                     }
                 }
-            }
-        )
-        Toggle("Lauch on Start Up", isOn: launchItemBinding)
-            .toggleStyle(.switch)
-            .scaleEffect(0.75)
-            .padding(.trailing, -10)
-        
-        HStack(content: {
-            Text("SunMode v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)")
-                .foregroundColor(.gray)
+            )
+            Toggle("Lauch on Start Up", isOn: launchItemBinding)
+                .toggleStyle(.switch)
             
-            Button("Quit SunMode", action: quitAction)
+            HStack(content: {
+                Button("Check for Update", action: checkLatestRelease)
+                if !newVersion.isEmpty {
+                    Link("New Version v\(newVersion)", destination: URL(string: "https://www.github.com/amaider/SunMode/releases/latest")!)
+                }
+            })
         })
     }
     
@@ -59,27 +53,46 @@ struct SettingsInputs: View {
     private func quitAction() {
         NSApplication.shared.terminate(nil)
     }
-    private func saveChange(_ any: any Equatable) {
-        // settings.restartMode.toggle()
-        UserDefaults.standard.set(try? PropertyListEncoder().encode(settings), forKey: "settings")
+    
+    private func checkLatestRelease() {
+        let url: URL = URL(string: "https://api.github.com/repos/amaider/SunMode/releases/latest")!
+        
+        let task: URLSessionDataTask = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+            if let error = error { NSLog("Error: \(error.localizedDescription)") }
+            guard let data = data else { return }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    if let latestVersion = json["tag_name"] as? String {
+                        if latestVersion != (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String) {
+                            newVersion = latestVersion
+                        } else {
+                            newVersion = ""
+                        }
+                    }
+                }
+            } catch {
+                NSLog("Error parsing github: \(error.localizedDescription)")
+            }
+        })
+        task.resume()
     }
 }
 
 struct SettingsInputs_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsInputs(settings: .constant(Settings()))
+        SettingsInputs()
     }
 }
 
-// MARK: SettingsInfo
+// MARK: Settings Info
 struct SettingsInfo: View {
     var body: some View {
         HStack(content: {
-            Spacer()
-            Button(action: quitAction, label: {
-                Text("Quit")
-                    .foregroundColor(.blue)
-            })
+            Text("SunMode v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)")
+                .foregroundColor(.gray)
+
+            Button("Quit SunMode", action: quitAction)
         })
     }
     

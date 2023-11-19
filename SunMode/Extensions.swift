@@ -4,8 +4,6 @@
 import Foundation
 import SwiftUI
 
-// MARK: Extensions
-
 // MARK: Formatter
 struct Formatter {
     static let decimal: NumberFormatter = {
@@ -20,8 +18,6 @@ struct Formatter {
         return formatter
     }()
 }
-
-
 
 // MARK: Blur
 struct Blur: NSViewRepresentable {

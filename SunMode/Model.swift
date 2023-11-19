@@ -4,11 +4,9 @@
 import SwiftUI
 
 class Model: ObservableObject {
-    @Published var systemAppearance: SystemAppearances = .light
     @AppStorage("mode") var mode: Modes = .none
-    @Published var settings: Settings = (try? PropertyListDecoder().decode(Settings.self, from: UserDefaults.standard.value(forKey: "settings") as? Data ?? Data())) ?? Settings()
-    // @AppStorage("menuBarIconAdvanced") var menuBarIconAdvanced: Bool = true
     
+    @Published var systemAppearance: SystemAppearances = .light
     @Published var refreshTimer: Timer? = nil       /// timer for refreshing external sensor data
     
     /// Modes

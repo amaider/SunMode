@@ -412,11 +412,8 @@ struct HueV1Info: View {
             if let sensor: HueV1.SensorData = sensorData {
                 Text("\(sensor.lightlevel / 1000) lux, at \(ISO8601DateFormatter().date(from: sensor.lastupdated + "Z")?.formatted(date: .omitted, time: .standard) ?? "-")")
             } else {
-                HStack(content: {
-                    Image(systemName: "exclamationmark.triangle")
-                        .foregroundColor(.red)
-                    Text("No Sensor Data")
-                })
+                Label("No Sensor Data", systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.red)
             }
         })
         .font(.footnote)
