@@ -15,7 +15,6 @@ struct Coordinates: Codable {
     var sunsetOffset: Int = -30
     
     var locationName: String = ""
-    var restartMode: Bool = false   /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
     
     /// Helpers
     private var _sun: Sun {
@@ -80,6 +79,7 @@ struct Coordinates: Codable {
 // MARK: Coordinates Inputs
 struct CoordinatesInputs: View {
     @Binding var coord: Coordinates
+    @Binding var restartMode: Bool
     @State private var locationManager: LocationManager? = nil
     
     var body: some View {
@@ -140,7 +140,7 @@ struct CoordinatesInputs: View {
     
     private func saveChange(_ any: any Equatable) {
         coord.locationName = "..."
-        coord.restartMode.toggle()
+        restartMode.toggle()
         
         UserDefaults.standard.set(try? PropertyListEncoder().encode(coord), forKey: "coord")
         

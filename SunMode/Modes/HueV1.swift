@@ -22,7 +22,6 @@ struct HueV1: Codable {
     var refreshInterval: Int = 5
     
     var sensorData: SensorData?
-    var restartMode: Bool = false   /// single variable for onChange ( to restart model.startMode() ) to subscribe to instead of each struct variable seperately
     
     var currAppearance: SystemAppearances? {
         guard let currSensor = self.sensorData else { return nil }
@@ -193,6 +192,7 @@ struct HueV1: Codable {
 // MARK: HueV1 Inputs
 struct HueV1Inputs: View {
     @Binding var hueV1: HueV1
+    @Binding var restartMode: Bool
     
     var hueDiscovery: HueBridgeDiscovery = HueBridgeDiscovery()
     
@@ -380,7 +380,7 @@ struct HueV1Inputs: View {
         })
     }
     private func saveChange(_ any: any Equatable) {
-        hueV1.restartMode.toggle()
+        restartMode.toggle()
         UserDefaults.standard.set(try? PropertyListEncoder().encode(hueV1), forKey: "hueV1")
     }
 }

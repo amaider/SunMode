@@ -8,6 +8,7 @@ class Model: ObservableObject {
     
     @Published var systemAppearance: SystemAppearances = .light
     @Published var refreshTimer: Timer? = nil       /// timer for refreshing external sensor data
+    @Published var restartMode: Bool = false        /// onChange restarts the mode loop
     
     /// Modes
     @Published var coord: Coordinates = (try? PropertyListDecoder().decode(Coordinates.self, from: UserDefaults.standard.value(forKey: "coord") as? Data ?? Data())) ?? Coordinates()

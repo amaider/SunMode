@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F90E3BBB2A1C0054000E99A4 /* HueV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90E3BBA2A1C0054000E99A4 /* HueV3.swift */; };
-		F90E3BBD2A1C04CF000E99A4 /* StaticTimeClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90E3BBC2A1C04CF000E99A4 /* StaticTimeClass.swift */; };
 		F91A9D6E29F5CDF300C59350 /* SystemFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */; };
 		F966426129EC71470022FDC3 /* SunModeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426029EC71470022FDC3 /* SunModeApp.swift */; };
 		F966426329EC71470022FDC3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F966426229EC71470022FDC3 /* ContentView.swift */; };
@@ -30,7 +29,6 @@
 
 /* Begin PBXFileReference section */
 		F90E3BBA2A1C0054000E99A4 /* HueV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueV3.swift; sourceTree = "<group>"; };
-		F90E3BBC2A1C04CF000E99A4 /* StaticTimeClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticTimeClass.swift; sourceTree = "<group>"; };
 		F91A9D6D29F5CDF300C59350 /* SystemFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemFunctions.swift; sourceTree = "<group>"; };
 		F9421E4E2AF8470100935446 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F966425D29EC71470022FDC3 /* SunMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SunMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,7 +115,6 @@
 				F90E3BBA2A1C0054000E99A4 /* HueV3.swift */,
 				F97126282A065FAB00DBCC5B /* HueBridgeDiscovery.swift */,
 				F966427C29EC737F0022FDC3 /* StaticTime.swift */,
-				F90E3BBC2A1C04CF000E99A4 /* StaticTimeClass.swift */,
 				F968433F29F1A747001A3EE5 /* Settings.swift */,
 			);
 			path = Modes;
@@ -213,7 +210,6 @@
 				F966427229EC722C0022FDC3 /* Model.swift in Sources */,
 				F966428229EC779D0022FDC3 /* LocationManager.swift in Sources */,
 				F966427B29EC73760022FDC3 /* HueV1.swift in Sources */,
-				F90E3BBD2A1C04CF000E99A4 /* StaticTimeClass.swift in Sources */,
 				F966427D29EC737F0022FDC3 /* StaticTime.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

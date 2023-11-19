@@ -63,6 +63,7 @@ struct StaticTime: Codable {
 // MARK: StaticTime Inputs
 struct StaticTimeInputs: View {
     @Binding var staticTime: StaticTime
+    @Binding var restartMode: Bool
     
     var body: some View {
         DatePicker("Sunrise", selection: $staticTime.sunrise, displayedComponents: .hourAndMinute)
@@ -73,7 +74,7 @@ struct StaticTimeInputs: View {
     
     // MARK: Functions
     private func saveChange(_ any: any Equatable) {
-        staticTime.restartMode.toggle()
+        restartMode.toggle()
         UserDefaults.standard.set(try? PropertyListEncoder().encode(staticTime), forKey: "staticTime")
     }
 }

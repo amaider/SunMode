@@ -50,10 +50,10 @@ struct ContentView: View {
                 // MARK: Inputs
                 switch model.mode {
                     case .none:         EmptyView()
-                    case .coord:        CoordinatesInputs(coord: $model.coord)
-                    case .hueV1:        HueV1Inputs(hueV1: $model.hueV1)
-                    case .hueV2:        HueV2Inputs(hueV2: $model.hueV2)
-                    case .staticTime:   StaticTimeInputs(staticTime: $model.staticTime)
+                    case .coord:        CoordinatesInputs(coord: $model.coord, restartMode: $model.restartMode)
+                    case .hueV1:        HueV1Inputs(hueV1: $model.hueV1, restartMode: $model.restartMode)
+                    case .hueV2:        HueV2Inputs(hueV2: $model.hueV2, restartMode: $model.restartMode)
+                    case .staticTime:   StaticTimeInputs(staticTime: $model.staticTime, restartMode: $model.restartMode)
                 }
             }
             
