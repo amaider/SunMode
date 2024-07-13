@@ -49,7 +49,7 @@ struct HueV2: Codable {
         request.httpMethod = "GET"
         request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
         
-        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
+        URLSession(configuration: URLSessionConfiguration.default, delegate: HueAPIv2URLSessioDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -101,7 +101,7 @@ struct HueV2: Codable {
         request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
         request.httpBody = bodyData
         
-        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
+        URLSession(configuration: URLSessionConfiguration.default, delegate: HueAPIv2URLSessioDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
@@ -141,7 +141,7 @@ struct HueV2: Codable {
         request.httpMethod = "GET"
         request.addValue(self.hueApplicationKey, forHTTPHeaderField: "hue-application-key")
         
-        URLSession(configuration: URLSessionConfiguration.default, delegate: NSURLSessionPinningDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
+        URLSession(configuration: URLSessionConfiguration.default, delegate: HueAPIv2URLSessioDelegate(), delegateQueue: OperationQueue.current).dataTask(with: request, completionHandler: { (data, response, error) in
             if let data = data, error == nil {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]

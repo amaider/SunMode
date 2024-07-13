@@ -26,46 +26,25 @@ class Model: ObservableObject {
     
     /// Debugging saved values
     // init() {
-    //     print("coord")
-    //     guard let uD: Data = UserDefaults.standard.value(forKey: "coord") as? Data else {
-    //         print("data error")
-    //         return
-    //     }
     //     do {
+    //         print("coord")
+    //         guard let uD: Data = UserDefaults.standard.value(forKey: "coord") as? Data else { print("coord error"); return }
     //         coord = try PropertyListDecoder().decode(Coordinates.self, from: uD)
-    //         print("succ")
-    //     } catch {
-    //         print("dfasfd \(error)")
-    //     }
-    //
-    //     print("huev1")
-    //     guard let uD: Data = UserDefaults.standard.value(forKey: "hueV1") as? Data else {
-    //         print("data error")
-    //         return
-    //     }
-    //     do {
+    //         
+    //         print("hueV1")
+    //         guard let uD: Data = UserDefaults.standard.value(forKey: "hueV1") as? Data else { print("hueV1 error"); return }
     //         hueV1 = try PropertyListDecoder().decode(HueV1.self, from: uD)
-    //         print("succ")
+    //         
+    //         print("staticTime")
+    //         guard let uD: Data = UserDefaults.standard.value(forKey: "staticTime") as? Data else { print("staticTime error"); return }
+    //         staticTime = try PropertyListDecoder().decode(StaticTime.self, from: uD)
     //     } catch {
-    //         print("dfasfd \(error)")
-    //     }
-    //
-    //     print("statictime")
-    //     guard let uD: Data = UserDefaults.standard.value(forKey: "staticTime") as? Data else {
-    //         print("data error")
-    //         return
-    //     }
-    //     do {
-    //         staticTime = try PropertyListDecoder().decode(StaticTime3.self, from: uD)
-    //         print("succ")
-    //     } catch {
-    //         print("dfasfd \(error)")
+    //         print("Catching: ", error)
     //     }
     // }
     
     // MARK: Functions
     func startMode() {
-        // print("startMode")
         refreshTimer?.invalidate()
         
         /// sets current appropiate system appearance
